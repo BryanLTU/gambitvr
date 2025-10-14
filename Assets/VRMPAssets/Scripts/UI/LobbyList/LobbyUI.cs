@@ -94,7 +94,7 @@ namespace XRMultiplayer
             bool isLocal = XRINetworkGameManager.CurrentSessionType != SessionType.DistributedAuthority;
             m_SessionPanelObject.SetActive(!isLocal);
             m_LocalPanelObject.SetActive(isLocal);
-            m_PlayerCount = XRINetworkGameManager.maxPlayers / 2;
+            m_PlayerCount = 2;
             XRINetworkGameManager.Instance.OnConnectionFailedAction += FailedToConnect;
             XRINetworkGameManager.Instance.OnConnectionUpdated += ConnectedUpdated;
 
