@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MinimalXRScene.unity
     guid: 63578a579630fda4785e812cf87c87e1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MultiplayerXRTestScene.unity
     guid: b1ec2d1fc555209439f179d8b9558148
   - enabled: 1
