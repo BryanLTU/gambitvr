@@ -28,6 +28,20 @@ public class ControllerHandCurl : MonoBehaviour
     [Header("Thumb")]
     public Finger thumb = new Finger { maxCurl = 50f };
 
+    [Header("Pose Blending")]
+    [Tooltip("Seconds to blend between poses")]
+    public float poseLerpTime = 0.06f;
+    [Range(0,1)] public float pinch_Index  = 1f;
+    [Range(0,1)] public float pinch_Thumb  = 1f;
+    [Range(0,1)] public float pinch_Middle = 0.1f;
+    [Range(0,1)] public float pinch_Ring   = 0.1f;
+    [Range(0, 1)] public float pinch_Little = 0.1f;
+    
+
+    bool _pinchActive;
+    float _tIndex, _tThumb, _tMiddle, _tRing, _tLittle;
+    float _lerpVel;
+
     void Awake()
     {
         CacheBindPose(index);
@@ -39,17 +53,40 @@ public class ControllerHandCurl : MonoBehaviour
 
     void LateUpdate()
     {
-        float g = Mathf.Clamp01(m_GripInput?.ReadValue() ?? 0f);
+        float g = Mathf.Clamp01(m_GripInput?.ReadValue()    ?? 0f);
         float t = Mathf.Clamp01(m_TriggerInput?.ReadValue() ?? 0f);
 
-        // Index reacts mostly to trigger; others to grip
-        ApplyCurl(index, Mathf.Clamp01(t));
-        ApplyCurl(middle, g);
-        ApplyCurl(ring,   g);
-        ApplyCurl(little, g);
+        float tgtIndex, tgtThumb, tgtMiddle, tgtRing, tgtLittle;
 
-        // Thumb: mix of both
-        ApplyCurl(thumb, Mathf.Clamp01(g * 0.6f + t * 0.4f));
+        if (_pinchActive)
+        {
+            tgtIndex  = pinch_Index;
+            tgtThumb  = pinch_Thumb;
+            tgtMiddle = pinch_Middle;
+            tgtRing   = pinch_Ring;
+            tgtLittle = pinch_Little;
+        }
+        else
+        {
+            tgtIndex  = t;
+            tgtThumb  = Mathf.Clamp01(g * 0.6f + t * 0.4f);
+            tgtMiddle = g;
+            tgtRing   = g;
+            tgtLittle = g;
+        }
+
+        float k = poseLerpTime > 0f ? Time.deltaTime / poseLerpTime : 1f;
+        _tIndex  = Mathf.Lerp(_tIndex,  tgtIndex,  k);
+        _tThumb  = Mathf.Lerp(_tThumb,  tgtThumb,  k);
+        _tMiddle = Mathf.Lerp(_tMiddle, tgtMiddle, k);
+        _tRing   = Mathf.Lerp(_tRing,   tgtRing,   k);
+        _tLittle = Mathf.Lerp(_tLittle, tgtLittle, k);
+
+        ApplyCurl(index,  _tIndex);
+        ApplyCurl(thumb,  _tThumb);
+        ApplyCurl(middle, _tMiddle);
+        ApplyCurl(ring,   _tRing);
+        ApplyCurl(little, _tLittle);
     }
 
     void CacheBindPose(Finger f)
@@ -59,23 +96,18 @@ public class ControllerHandCurl : MonoBehaviour
         if (f.distal)       f.d0 = f.distal.localRotation;
     }
 
-    void ApplyCurl(Finger f, float amount)
+    void ApplyCurl(Finger f, float amount01)
     {
-        if (f.proximal)
-        {
-            float sign = f.invert ? -1f : 1f;
-            var p = Quaternion.AngleAxis(sign * amount * f.maxCurl, f.localAxis);
-            f.proximal.localRotation = f.p0 * p;
-        }
-        if (f.intermediate)
-        {
-            var i = Quaternion.AngleAxis(amount * f.maxCurl * 0.8f, f.localAxis);
-            f.intermediate.localRotation = f.i0 * i;
-        }
-        if (f.distal)
-        {
-            var d = Quaternion.AngleAxis(amount * f.maxCurl * 0.6f, f.localAxis);
-            f.distal.localRotation = f.d0 * d;
-        }
+        float sign = f.invert ? -1f : 1f;
+        float aP = amount01 * f.maxCurl * sign;
+        float aI = amount01 * f.maxCurl * 0.8f;
+        float aD = amount01 * f.maxCurl * 0.6f;
+
+        if (f.proximal)     f.proximal.localRotation    = f.p0 * Quaternion.AngleAxis(aP, f.localAxis);
+        if (f.intermediate) f.intermediate.localRotation = f.i0 * Quaternion.AngleAxis(aI, f.localAxis);
+        if (f.distal)       f.distal.localRotation       = f.d0 * Quaternion.AngleAxis(aD, f.localAxis);
     }
+
+    public void BeginPinch() => _pinchActive = true;
+    public void EndPinch()   => _pinchActive = false;
 }
