@@ -96,7 +96,6 @@ public class ChessGame : MonoBehaviour
 
     public List<BoardSquare> GetLegalMoves(ChessPiece piece)
     {
-        //TODO will need to implement login, depending on type, color and current state of board
         var moves = new List<BoardSquare>();
 
         if (piece.currentSquare == null)
@@ -105,35 +104,66 @@ public class ChessGame : MonoBehaviour
             return moves;
         }
 
+        int f = piece.currentSquare.file;
+        int r = piece.currentSquare.rank;
+
         switch (piece.pieceType)
         {
             case PieceType.Pawn:
-                GeneratePawnMoves(piece, piece.currentSquare.file, piece.currentSquare.rank, moves);
+                GeneratePawnMoves(piece, f, r, moves);
+                break;
+            case PieceType.Rook:
+                GenerateSlidingMoves(piece, f, r, moves,
+                    new (int df, int dr)[]
+                    {
+                        (1, 0), (-1, 0), (0, 1), (0, -1)
+                    });
+                break;
+            case PieceType.Bishop:
+                GenerateSlidingMoves(piece, f, r, moves,
+                    new (int df, int dr)[]
+                    {
+                        (1, 1), (1, -1), (-1, 1), (-1, -1)
+                    });
+                break;
+            case PieceType.Queen:
+                GenerateSlidingMoves(piece, f, r, moves,
+                    new (int df, int dr)[]
+                    {
+                        (1, 0), (-1, 0), (0, 1), (0, -1),
+                        (1, 1), (1, -1), (-1, 1), (-1, -1)
+                    });
+                break;
+            case PieceType.Knight:
+                GenerateKnightMoves(piece, f, r, moves);
+                break;
+            case PieceType.King:
+                GenerateKingMoves(piece, f, r, moves);
                 break;
         }
 
         return moves;
     }
 
-    void GeneratePawnMoves(ChessPiece piece, int file, int rank, List<BoardSquare> moves)
+    void GeneratePawnMoves(ChessPiece piece, int f, int r, List<BoardSquare> moves)
     {
         int direction = (piece.pieceColor == PieceColor.White) ? 1 : -1;
         int startRank = (piece.pieceColor == PieceColor.White) ? 1 : 6;
 
-        int forwardRank = rank + direction;
+        int forwardRank = r + direction;
 
-        if (InBounds(file, forwardRank) && GetPieceAt(file, forwardRank) == null)
+        if (InBounds(f, forwardRank) && GetPieceAt(f, forwardRank) == null)
         {
-            AddSqaureIfExists(file, forwardRank, moves);
+            AddSquareIfExists(f, forwardRank, moves);
 
-            int doubleRank = rank + 2 * direction;
-            if (rank == startRank && InBounds(file, doubleRank) && GetPieceAt(file, doubleRank) == null)
+            int doubleRank = r + 2 * direction;
+            if (r == startRank && InBounds(f, doubleRank) && GetPieceAt(f, doubleRank) == null)
             {
-                AddSqaureIfExists(file, doubleRank, moves);
+                AddSquareIfExists(f, doubleRank, moves);
             }
         }
 
-        int[] diagFiles = { file - 1, file + 1 };
+        int[] diagFiles = { f - 1, f + 1 };
         foreach ( int df in diagFiles)
         {
             int rf = forwardRank;
@@ -142,12 +172,90 @@ public class ChessGame : MonoBehaviour
             var targetPiece = GetPieceAt(df, rf);
             if (targetPiece != null && targetPiece.pieceColor != piece.pieceColor)
             {
-                AddSqaureIfExists(df, rf, moves);
+                AddSquareIfExists(df, rf, moves);
             }
         }
     }
 
-    void AddSqaureIfExists(int file, int rank, List<BoardSquare> moves)
+    // (rook/bishop/queen)
+    void GenerateSlidingMoves(ChessPiece piece, int f, int r, List<BoardSquare> moves, (int df, int dr)[] directions)
+    {
+        foreach (var dir in directions)
+        {
+            int file = f + dir.df;
+            int rank = r + dir.dr;
+
+            while (InBounds(file, rank))
+            {
+                var targetPiece = GetPieceAt(file, rank);
+                if (targetPiece == null)
+                {
+                    AddSquareIfExists(file, rank, moves);
+                }
+                else
+                {
+                    if (targetPiece.pieceColor != piece.pieceColor)
+                    {
+                        AddSquareIfExists(file, rank, moves);
+                    }
+
+                    break;
+                }
+
+                file += dir.df;
+                rank += dir.dr;
+            }
+        }
+    }
+
+    void GenerateKnightMoves(ChessPiece piece, int f, int r, List<BoardSquare> moves)
+    {
+        int[,] offsets = new int[,]
+        {
+            { 1, 2 }, { 2, 1 },
+            { 2, -1 }, { 1, -2 },
+            { -1, -2 }, { -2, -1 },
+            { -2, 1 }, { -1, 2 }
+        };
+
+        for (int i = 0; i < offsets.GetLength(0); i++)
+        {
+            int file = f + offsets[i, 0];
+            int rank = r + offsets[i, 1];
+
+            if (!InBounds(file, rank)) continue;
+
+            var targetPiece = GetPieceAt(file, rank);
+            if (targetPiece == null || targetPiece.pieceColor != piece.pieceColor)
+            {
+                AddSquareIfExists(file, rank, moves);
+            }
+        }
+    }
+
+    void GenerateKingMoves(ChessPiece peice, int f, int r, List<BoardSquare> moves)
+    {
+        for (int df = -1; df <= 1; df++)
+        {
+            for (int dr = -1; dr <= 1; dr++)
+            {
+                if (df == 0 && dr == 0) continue;
+
+                int file = f + df;
+                int rank = r + dr;
+
+                if (!InBounds(file, rank)) continue;
+
+                var targetPiece = GetPieceAt(file, rank);
+                if (targetPiece == null || targetPiece.pieceColor != peice.pieceColor)
+                {
+                    AddSquareIfExists(file, rank, moves);
+                }
+            }
+        }
+    }
+
+    void AddSquareIfExists(int file, int rank, List<BoardSquare> moves)
     {
         var sq = GetSquare(file, rank);
         if (sq != null)
