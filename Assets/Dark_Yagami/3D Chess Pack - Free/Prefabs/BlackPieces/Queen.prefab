@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 7881159684335321083}
   - component: {fileID: 3394376935641409026}
   - component: {fileID: 7551525752787868072}
+  - component: {fileID: 2190563851731116248}
+  - component: {fileID: 6089478833266728818}
   m_Layer: 0
   m_Name: Queen
   m_TagString: Untagged
@@ -283,7 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2335227226
+  GlobalObjectIdHash: 1766565094
   InScenePlacedSourceGlobalObjectIdHash: 1426383405
   DeferredDespawnTick: 0
   Ownership: 1
@@ -411,3 +413,30 @@ MonoBehaviour:
   m_AllowCollisionOwnershipExchange: 1
   m_MinExchangeVelocityMagitude: 0.025
   spawnLocked: 1
+--- !u!114 &2190563851731116248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815685700382409719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6036b4ea46ea740aa279d8213d3385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessPiece
+  pieceType: 4
+  pieceColor: 1
+  currentSquare: {fileID: 0}
+--- !u!114 &6089478833266728818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815685700382409719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0004b9bde985a274289942d227cffb1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessPieceXR

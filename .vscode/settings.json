@@ -66,5 +66,7 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
     },
-    "dotnet.defaultSolution": "gambitvr.sln"
+    "dotnet.defaultSolution": "gambitvr.sln",
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4
 }
