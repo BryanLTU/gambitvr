@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using XRMultiplayer;
 
 public class FPSArenaManager : NetworkBehaviour
 {
@@ -46,6 +47,8 @@ public class FPSArenaManager : NetworkBehaviour
         yield return Fade(0f, 0.5f);
 
         yield return RaiseWallsRoutine();
+
+        yield return StartCountdown();
     }
 
     private IEnumerator Fade(float targetAlpha, float duration)
@@ -83,5 +86,18 @@ public class FPSArenaManager : NetworkBehaviour
         }
 
         wallsRoot.position = endPos;
+    }
+
+    private IEnumerator StartCountdown()
+    {
+        //TODO change to actual in scene number visuals (e.g. in the middle of the arena)
+        PlayerHudNotification.Instance.ShowText("Game starts in 3", 1);
+        yield return new WaitForSeconds(2);
+
+        for (int i = 2; i > 0; i--)
+        {
+            PlayerHudNotification.Instance.ShowText($"{i}", 1);
+            yield return new WaitForSeconds(2);
+        }
     }
 }
