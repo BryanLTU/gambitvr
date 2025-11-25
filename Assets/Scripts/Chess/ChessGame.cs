@@ -274,8 +274,7 @@ public class ChessGame : MonoBehaviour
         var existing = GetPieceAt(targetSquare.file, targetSquare.rank);
         if (existing != null && existing.pieceColor != piece.pieceColor)
         {
-            // Capture logic. TODO: implement event system to transition to FPS
-            Destroy(existing.gameObject);
+            FPSArenaManager.Instance.StartDuelRpc();
         }
 
         var fromSquare = piece.currentSquare;
