@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 494688161834992057}
   - component: {fileID: 9119218211650207288}
   - component: {fileID: 2516486659997934557}
+  - component: {fileID: 2075192409905907042}
+  - component: {fileID: 783745162872394344}
   m_Layer: 0
   m_Name: Rook
   m_TagString: Untagged
@@ -159,7 +161,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 1
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -283,10 +285,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4213095057
+  GlobalObjectIdHash: 2876085703
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
-  Ownership: 1
+  Ownership: 3
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -411,3 +413,32 @@ MonoBehaviour:
   m_AllowCollisionOwnershipExchange: 1
   m_MinExchangeVelocityMagitude: 0.025
   spawnLocked: 1
+--- !u!114 &2075192409905907042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127641879565044153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6036b4ea46ea740aa279d8213d3385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessPiece
+  ShowTopMostFoldoutHeaderGroup: 1
+  pieceType: 1
+  pieceColor: 1
+  currentSquare: {fileID: 0}
+--- !u!114 &783745162872394344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127641879565044153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0004b9bde985a274289942d227cffb1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessPieceXR
+  ShowTopMostFoldoutHeaderGroup: 1
