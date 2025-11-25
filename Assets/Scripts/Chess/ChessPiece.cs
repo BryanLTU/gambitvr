@@ -46,7 +46,6 @@ public class ChessPiece : NetworkBehaviour
     {
         if (_rb == null) return;
 
-        Debug.Log($"{name} freefromboard");
         _rb.isKinematic = false;
         _rb.useGravity = true;
     }
