@@ -161,7 +161,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 1
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -285,10 +285,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 692561677
+  GlobalObjectIdHash: 2876085703
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
-  Ownership: 1
+  Ownership: 3
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -425,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf6036b4ea46ea740aa279d8213d3385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessPiece
+  ShowTopMostFoldoutHeaderGroup: 1
   pieceType: 1
   pieceColor: 1
   currentSquare: {fileID: 0}
@@ -440,3 +441,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0004b9bde985a274289942d227cffb1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessPieceXR
+  ShowTopMostFoldoutHeaderGroup: 1

@@ -1554,41 +1554,181 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 126025169179568274, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3848073842
+      objectReference: {fileID: 0}
+    - target: {fileID: 126025169179568274, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 318070377991905266, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1067069824
+      objectReference: {fileID: 0}
+    - target: {fileID: 318070377991905266, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 497058555664567791, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4148197684
+      objectReference: {fileID: 0}
+    - target: {fileID: 497058555664567791, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 1046656038756064985, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3816614821
       objectReference: {fileID: 0}
+    - target: {fileID: 1046656038756064985, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512120296483977104, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1626681315
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512120296483977104, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 1662969473150569988, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: m_Name
       value: Chess
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931356429800178115, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2294498175
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931356429800178115, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 2322064649519191962, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3113336091
       objectReference: {fileID: 0}
+    - target: {fileID: 2322064649519191962, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525400916158021158, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 348659976
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525400916158021158, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 2774507582414817647, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1678039695
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774507582414817647, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870183592412201011, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870183592412201011, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3086117704477351315, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 896543136
+      objectReference: {fileID: 0}
+    - target: {fileID: 3086117704477351315, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 3166512560961810906, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4071966107
+      objectReference: {fileID: 0}
+    - target: {fileID: 3166512560961810906, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516689599000572160, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1655930616
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516689599000572160, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656798128245703318, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3809968815
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656798128245703318, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656798128245703318, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128133409508780483, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1436556838
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128133409508780483, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 4370974281531401838, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 260422731
       objectReference: {fileID: 0}
+    - target: {fileID: 4370974281531401838, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 4681427191924717764, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1316089826
+      objectReference: {fileID: 0}
+    - target: {fileID: 4681427191924717764, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 5423724178097549921, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 119824352
+      objectReference: {fileID: 0}
+    - target: {fileID: 5423724178097549921, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 5569036341495068116, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3831385581
       objectReference: {fileID: 0}
+    - target: {fileID: 5569036341495068116, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 5978523789832694144, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1455335116
+      objectReference: {fileID: 0}
+    - target: {fileID: 5978523789832694144, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 5984064160663556452, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1928567285
+      objectReference: {fileID: 0}
+    - target: {fileID: 5984064160663556452, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 6012770835653240282, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1634,33 +1774,105 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2789129573
       objectReference: {fileID: 0}
+    - target: {fileID: 6077401549653842670, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 6676473954559638223, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 697513084
+      objectReference: {fileID: 0}
+    - target: {fileID: 6676473954559638223, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 7043288312671720299, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2832077118
       objectReference: {fileID: 0}
+    - target: {fileID: 7043288312671720299, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 7117976294857750274, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3796493799
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117976294857750274, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226793739439953034, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1705939416
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226793739439953034, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 7306598412466422432, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1994691598
+      objectReference: {fileID: 0}
+    - target: {fileID: 7306598412466422432, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 7354234277374955379, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1434597572
       objectReference: {fileID: 0}
+    - target: {fileID: 7354234277374955379, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980483226784854487, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2637717315
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980483226784854487, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 8204337950263881187, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3248789455
+      objectReference: {fileID: 0}
+    - target: {fileID: 8204337950263881187, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     - target: {fileID: 8412317351320145088, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1471860135
       objectReference: {fileID: 0}
+    - target: {fileID: 8412317351320145088, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
     - target: {fileID: 8900682956549586756, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 4183490081
+      objectReference: {fileID: 0}
+    - target: {fileID: 8900682956549586756, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 9006273542464609565, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3926829072
+      objectReference: {fileID: 0}
+    - target: {fileID: 9006273542464609565, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208701782306543993, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2278606952
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208701782306543993, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4291980033
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

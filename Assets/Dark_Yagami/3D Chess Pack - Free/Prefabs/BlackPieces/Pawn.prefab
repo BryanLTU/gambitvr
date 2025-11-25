@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 7941312191816232749}
   - component: {fileID: 4787664866039397335}
   - component: {fileID: 2187801726347786043}
-  - component: {fileID: 3621174873706372535}
-  - component: {fileID: 3319309303748273896}
-  - component: {fileID: 3140256158073626985}
+  - component: {fileID: 6769074287704930270}
+  - component: {fileID: 3874218433427080020}
+  - component: {fileID: 1654400741496463050}
   - component: {fileID: 3845207475627435254}
   - component: {fileID: 1550005259618859780}
   m_Layer: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
-  m_MovementType: 0
+  m_MovementType: 1
   m_PredictedVisualsTransform: {fileID: 0}
   m_VelocityDamping: 1
   m_VelocityScale: 1
@@ -285,10 +285,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 387828248
+  GlobalObjectIdHash: 119824352
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
-  Ownership: 1
+  Ownership: 3
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -298,7 +298,7 @@ MonoBehaviour:
   AutoObjectParentSync: 0
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &3621174873706372535
+--- !u!114 &6769074287704930270
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -345,7 +345,7 @@ MonoBehaviour:
   Interpolate: 1
   SlerpPosition: 0
   isServerAuthoritative: 0
---- !u!114 &3319309303748273896
+--- !u!114 &3874218433427080020
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -362,7 +362,7 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
---- !u!114 &3140256158073626985
+--- !u!114 &1654400741496463050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -425,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf6036b4ea46ea740aa279d8213d3385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessPiece
+  ShowTopMostFoldoutHeaderGroup: 1
   pieceType: 0
   pieceColor: 1
   currentSquare: {fileID: 0}
@@ -440,3 +441,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0004b9bde985a274289942d227cffb1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessPieceXR
+  ShowTopMostFoldoutHeaderGroup: 1

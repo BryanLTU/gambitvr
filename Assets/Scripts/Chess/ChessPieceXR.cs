@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Gaze;
@@ -7,7 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 [RequireComponent(typeof(ChessPiece))]
 [RequireComponent(typeof(XRGrabInteractable))]
-public class ChessPieceXR : MonoBehaviour
+public class ChessPieceXR : NetworkBehaviour
 {
     private ChessPiece _piece;
     private XRGrabInteractable _grabInteractable;
@@ -24,6 +25,7 @@ public class ChessPieceXR : MonoBehaviour
 
     void OnDestroy()
     {
+        base.OnDestroy();
         if (_grabInteractable == null) return;
         _grabInteractable.selectEntered.RemoveListener(OnGrab);
         _grabInteractable.selectExited.RemoveListener(OnRelease);        
@@ -32,8 +34,12 @@ public class ChessPieceXR : MonoBehaviour
     void OnGrab(SelectEnterEventArgs args)
     {
         if (args.interactorObject is XRSocketInteractor) return;
-        
-        Debug.Log($"OnGarb by {args.interactorObject.transform.name}");
+
+        // if (!IsOwner) return;
+
+        _piece.IsGrabbed = true;
+        _piece.FreeFromBoard();
+
         _currentLegalMoves = ChessGame.Instance.GetLegalMoves(_piece);
         foreach (var sq in _currentLegalMoves)
             sq.SetHighlight(true);
@@ -49,19 +55,23 @@ public class ChessPieceXR : MonoBehaviour
                 sq.SetHighlight(false);
         }
 
+        // if (!IsOwner) return;
+
         BoardSquare target = FindClosestSquare();
 
+        var netObj = _piece.GetComponent<NetworkObject>();
         if (target != null)
         {
-            bool moved = ChessGame.Instance.TryMove(_piece, target);
-            if (!moved)
-            {
-                _piece.SetSquare(_piece.currentSquare);
-            }
-        } else
-        {
-            _piece.SetSquare(_piece.currentSquare);
+            ChessGameNet.Instance.SubmitMoveRpc(netObj.NetworkObjectId, target.file, target.rank);
         }
+        else
+        {
+            if (_piece.currentSquare != null)
+            {
+                ChessGameNet.Instance.SubmitMoveRpc(netObj.NetworkObjectId,_piece.currentSquare.file, _piece.currentSquare.rank);
+            }
+        }
+        _piece.IsGrabbed = false;
     }
 
     BoardSquare FindClosestSquare()
@@ -77,6 +87,11 @@ public class ChessPieceXR : MonoBehaviour
                 bestDist = d;
                 best = sq;
             }
+        }
+
+        if (bestDist > 2f)
+        {
+            return null;
         }
 
         return best;
