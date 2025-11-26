@@ -194,6 +194,7 @@ MonoBehaviour:
   spawnB: {fileID: 101307667741964999}
   xrRigRoot: {fileID: 2110757421}
   fadeImage: {fileID: 1619057087}
+  localPlayerClass: {fileID: 2110757429}
   wallsRoot: {fileID: 1072646060}
   wallsRiseDuration: 3
 --- !u!1001 &510207640
