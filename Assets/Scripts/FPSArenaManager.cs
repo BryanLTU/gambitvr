@@ -16,6 +16,9 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private Transform xrRigRoot;
     [SerializeField] private Image fadeImage;
 
+    [Header("Local Player Class / Loadout")]
+    [SerializeField] private PlayerClass localPlayerClass;
+
     [Header("Arena Walls")]
     [SerializeField] private Transform wallsRoot;
     [SerializeField] private float wallsRiseDuration = 3f;
@@ -29,10 +32,10 @@ public class FPSArenaManager : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void StartDuelRpc()
     {
-        StartCoroutine(DuelTransitionRoutine(true));
+        StartCoroutine(DuelTransitionRoutine(true, ClassType.Pawn));
     }
 
-    private IEnumerator DuelTransitionRoutine(bool iAmWhite)
+    private IEnumerator DuelTransitionRoutine(bool iAmWhite, ClassType myClass)
     {
         yield return Fade(1f, 0.5f);
 
@@ -40,6 +43,11 @@ public class FPSArenaManager : NetworkBehaviour
         if (xrRigRoot != null && target != null)
         {
             xrRigRoot.SetPositionAndRotation(target.position, target.rotation);
+        }
+
+        if (localPlayerClass != null)
+        {
+            localPlayerClass.AssignClass(myClass);
         }
 
         yield return new WaitForSeconds(2f);
