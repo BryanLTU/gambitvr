@@ -197,6 +197,7 @@ MonoBehaviour:
   localPlayerClass: {fileID: 2110757429}
   wallsRoot: {fileID: 1072646060}
   wallsRiseDuration: 3
+  healthUI: {fileID: 2045698932}
 --- !u!1001 &510207640
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -672,6 +673,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1296495437531068041, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1296495437531068041, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1339823300485290393, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -872,6 +881,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23
       objectReference: {fileID: 0}
+    - target: {fileID: 5739647803113632839, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
+      propertyPath: m_FillAmount
+      value: 0.886
+      objectReference: {fileID: 0}
     - target: {fileID: 6155025955719705161, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -890,6 +903,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6683097358647424652, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961438069456946398, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6967245486335044556, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
@@ -1619,6 +1636,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2045698932 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4391209647129549467, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
+  m_PrefabInstance: {fileID: 1619057086}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2110757421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7174019212652907432, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}

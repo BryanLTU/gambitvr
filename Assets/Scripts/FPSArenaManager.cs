@@ -23,6 +23,9 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private Transform wallsRoot;
     [SerializeField] private float wallsRiseDuration = 3f;
 
+    [Header("Health")]
+    [SerializeField] private GameObject healthUI;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -32,7 +35,21 @@ public class FPSArenaManager : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void StartDuelRpc()
     {
+        if (IsServer)
+        {
+            foreach (var ph in FindObjectsByType<PlayerHealth>(FindObjectsSortMode.None))
+            {
+                ph.ResetHealthRpc();
+            }
+        }
+
         StartCoroutine(DuelTransitionRoutine(true, ClassType.Pawn));
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void EndDuelRpc()
+    {
+        healthUI.SetActive(false);
     }
 
     private IEnumerator DuelTransitionRoutine(bool iAmWhite, ClassType myClass)
@@ -49,6 +66,8 @@ public class FPSArenaManager : NetworkBehaviour
         {
             localPlayerClass.AssignClass(myClass);
         }
+
+        healthUI.SetActive(true);
 
         yield return new WaitForSeconds(2f);
 
@@ -107,5 +126,12 @@ public class FPSArenaManager : NetworkBehaviour
             PlayerHudNotification.Instance.ShowText($"{i}", 1);
             yield return new WaitForSeconds(2);
         }
+    }
+
+    public void PlayerDied(PlayerHealth deadPlayer)
+    {
+        if (!IsServer) return;
+
+        EndDuelRpc();
     }
 }
