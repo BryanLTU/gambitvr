@@ -5,15 +5,11 @@ using UnityEngine.UI;
 public class HandHealthUI : MonoBehaviour
 {
     [SerializeField] private Slider healthFill;
-    // [SerializeField] private Transform cameraTransform;
 
     private PlayerHealth _localHealth;
 
     void Start()
     {
-        /*if (!cameraTransform)
-            cameraTransform = Camera.main.transform;*/
-
         TryGetLocalHealth();
 
         if (NetworkManager.Singleton != null)
@@ -49,9 +45,5 @@ public class HandHealthUI : MonoBehaviour
         if (_localHealth == null) return;
 
         healthFill.value = _localHealth.Health01;
-
-        // face the camera | Not needed for now
-        /*Vector3 dir = (transform.position - cameraTransform.position).normalized;
-        transform.rotation = Quaternion.LookRotation(dir);*/
     }
 }
