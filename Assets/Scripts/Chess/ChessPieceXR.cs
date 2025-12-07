@@ -35,7 +35,15 @@ public class ChessPieceXR : NetworkBehaviour
     {
         if (args.interactorObject is XRSocketInteractor) return;
 
-        // if (!IsOwner) return;
+        if (!ChessGameNet.Instance.CanLocalPlayerControlPiece(_piece))
+        {
+            var interactor = args.interactorObject;
+            if (interactor != null)
+            {
+                args.manager.SelectExit(interactor, _grabInteractable);
+            }
+            return;
+        }
 
         _piece.IsGrabbed = true;
         _piece.FreeFromBoard();
@@ -49,13 +57,13 @@ public class ChessPieceXR : NetworkBehaviour
     {
         if (args.interactorObject is XRSocketInteractor) return;
 
+        if (!ChessGameNet.Instance.CanLocalPlayerControlPiece(_piece)) return;
+
         if (_currentLegalMoves != null)
         {
             foreach (var sq in _currentLegalMoves)
                 sq.SetHighlight(false);
         }
-
-        // if (!IsOwner) return;
 
         BoardSquare target = FindClosestSquare();
 
