@@ -1869,7 +1869,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5847548332358803580}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000014901159, y: -0.009826767, z: -0.00018448473, w: 0.9999517}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.02, y: -0.0119, z: 0.0344}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3460,13 +3460,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DynamicAttachOnGrab
   handCurl: {fileID: 1201460258258243494}
-  interactor: {fileID: 0}
-  indexTip: {fileID: 0}
-  thumbTip: {fileID: 0}
+  interactor: {fileID: 6627364833942401699}
+  indexTip: {fileID: 9158900090258267720}
+  thumbTip: {fileID: 4522438040036160379}
   surfaceOffset: 0.006
   grabbableMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   ignorePrefabAttachPoses: 1
   updateWhileHeld: 1
   followLerp: 1
@@ -3625,7 +3625,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -3654,6 +3654,11 @@ Transform:
 --- !u!4 &3482913740029100244 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3822381235089863185, guid: c5733d4e35d799a47b4cd448d5a0b2a0, type: 3}
+  m_PrefabInstance: {fileID: 386774022582792901}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4522438040036160379 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4295578088121876926, guid: c5733d4e35d799a47b4cd448d5a0b2a0, type: 3}
   m_PrefabInstance: {fileID: 386774022582792901}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &4560701204077305933 stripped
