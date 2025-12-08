@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa639b2c5a5f0d4781281955b50b502, type: 3}
   m_Name: RifleConfig
   m_EditorClassIdentifier: Assembly-CSharp::WeaponConfig
-  weaponId: 0
-  weaponPrefab: {fileID: 0}
+  weaponId: 1
+  weaponPrefab: {fileID: 5951861161741967482, guid: adf8ecb3e12bafc4598bf8028dfcc403, type: 3}
   damage: 10
   fireRate: 1
   maxRange: 100

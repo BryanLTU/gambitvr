@@ -24,11 +24,7 @@ public class PlayerClass : MonoBehaviour
         {
             case ClassType.None: default: break;
 
-            case ClassType.Pawn: 
-                currentWeapon = Instantiate(pawnWeaponPrefab, rightHand);
-                currentWeapon.transform.localPosition = Vector3.zero;
-                currentWeapon.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-                break;
+            case ClassType.Pawn: break;
 
             case ClassType.King: break;
 

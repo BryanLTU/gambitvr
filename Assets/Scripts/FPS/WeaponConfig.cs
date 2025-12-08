@@ -3,7 +3,7 @@ using UnityEngine;
 public enum WeaponId
 {
     None = 0,
-    Rifle = 0,
+    Rifle = 1,
     Bow = 2
 }
 
