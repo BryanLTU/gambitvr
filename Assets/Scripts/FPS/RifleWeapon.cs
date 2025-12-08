@@ -54,7 +54,7 @@ public class RifleWeapon : WeaponBase
     {
         if (!isHeld || config == null || muzzle == null) return;
 
-        if (m_TriggerInput.inputAction.WasPerformedThisFrame())
+        if (m_TriggerInput.ReadValue() >= 0.5f)
         {
             TryFire();
         }
