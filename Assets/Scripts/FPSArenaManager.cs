@@ -182,14 +182,15 @@ public class FPSArenaManager : NetworkBehaviour
         }
     }
 
-    public void RequestHitscanShot(Vector3 origin, Vector3 direction, float maxRange, float damage)
+    public void RequestHitscanShot(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId)
     {
-        RequestHitscanShotRpc(origin, direction, maxRange, damage);
+        RequestHitscanShotRpc(origin, direction, maxRange, damage, weaponId);
     }
 
     [Rpc(SendTo.Server)]
-    private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, RpcParams rpcParams = default)
+    private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
     {
+        WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
         Ray ray = new Ray(origin, direction);
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Ignore))
@@ -199,30 +200,63 @@ public class FPSArenaManager : NetworkBehaviour
             {
                 health.TakeDamageRpc(damage);
             }
+            
+            ApplyKnockback(hit, direction, cfg);
 
-            BroadcastHitscanShotRpc(origin, hit.point);
+            BroadcastHitscanShotRpc(origin, hit.point, weaponId);
         }
         else
         {
             Vector3 endPoint = origin + direction * maxRange;
-            BroadcastHitscanShotRpc(origin, endPoint);
+            BroadcastHitscanShotRpc(origin, endPoint, weaponId);
         }
     }
 
     [Rpc(SendTo.Everyone)]
-    private void BroadcastHitscanShotRpc(Vector3 origin, Vector3 hitPoint, RpcParams rpcParams = default)
+    private void BroadcastHitscanShotRpc(Vector3 origin, Vector3 hitPoint, WeaponId weaponId, RpcParams rpcParams = default)
     {
-        SpawnTracer(origin, hitPoint);
-        SpawnImpact(hitPoint);
+        WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
+
+        SpawnTracer(origin, hitPoint, cfg);
+        SpawnImpact(hitPoint, cfg);
     }
 
-    private void SpawnTracer(Vector3 from, Vector3 to)
+    private void SpawnTracer(Vector3 from, Vector3 to, WeaponConfig weaponConfig)
     {
-        // TODO: line render / trail
+        if (weaponConfig.tracerPrefab == null) return;
+
+        GameObject tracerObj = Instantiate(weaponConfig.tracerPrefab);
+        var lr = tracerObj.GetComponent<LineRenderer>();
+        
+        if (lr != null)
+        {
+            lr.positionCount = 2;
+            lr.SetPosition(0, from);
+            lr.SetPosition(1, to);
+        }
+
+        Destroy(tracerObj, weaponConfig.tracerDuration);
     }
 
-    private void SpawnImpact(Vector3 at)
+    private void SpawnImpact(Vector3 at, WeaponConfig weaponConfig)
     {
-        // TODO: impact particles / decal
+        if (weaponConfig.impactPrefab == null) return;
+
+        GameObject impactObject = Instantiate(weaponConfig.impactPrefab, at, Quaternion.identity);
+        Destroy(impactObject, weaponConfig.impactDuration);
+    }
+
+    private void ApplyKnockback(RaycastHit hit, Vector3 direction, WeaponConfig weaponConfig)
+    {
+        if (weaponConfig.knockbackForce <= 0f) return;
+
+        Rigidbody rb = hit.rigidbody ?? hit.collider.attachedRigidbody;
+        if (rb == null) return;
+
+        if (!weaponConfig.knockbackPlayers && rb.GetComponent<PlayerHealth>() != null) return;
+
+        if (!weaponConfig.knockbackChessPieces && rb.transform.CompareTag("Chess")) return;
+
+        rb.AddForceAtPosition(direction.normalized * weaponConfig.knockbackForce, hit.point, ForceMode.Impulse);
     }
 }

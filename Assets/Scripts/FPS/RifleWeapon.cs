@@ -65,6 +65,6 @@ public class RifleWeapon : WeaponBase
         Vector3 origin = muzzle.position;
         Vector3 dir = muzzle.forward;
 
-        FPSArenaManager.Instance.RequestHitscanShot(origin, dir, config.maxRange, config.damage);
+        FPSArenaManager.Instance.RequestHitscanShot(origin, dir, config.maxRange, config.damage, config.weaponId);
     }
 }

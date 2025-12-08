@@ -17,3 +17,10 @@ MonoBehaviour:
   damage: 10
   fireRate: 1
   maxRange: 100
+  tracerPrefab: {fileID: 5390777519744527236, guid: e2b4fe4331c61924f90146ff7527ad1d, type: 3}
+  tracerDuration: 0.1
+  impactPrefab: {fileID: 7249649395607456761, guid: 60d72cdf157bcf2468f636b8fd7be60d, type: 3}
+  impactDuration: 1.5
+  knockbackForce: 1
+  knockbackPlayers: 0
+  knockbackChessPieces: 1

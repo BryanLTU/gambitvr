@@ -19,4 +19,17 @@ public class WeaponConfig : ScriptableObject
     [Tooltip("Shots per second")]
     public float fireRate = 10f;
     public float maxRange = 100f;
+
+    [Header("Tracer")]
+    public GameObject tracerPrefab;
+    public float tracerDuration = 0.1f;
+
+    [Header("Impact")]
+    public GameObject impactPrefab;
+    public float impactDuration = 1.5f;
+
+    [Header("Knockback")]
+    public float knockbackForce = 0f;
+    public bool knockbackPlayers = false;
+    public bool knockbackChessPieces = true;
 }

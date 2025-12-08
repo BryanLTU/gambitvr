@@ -11,6 +11,9 @@ public abstract class WeaponBase : MonoBehaviour
         config = cfg;
     }
 
+    public WeaponConfig Config => config;
+    public WeaponId WeaponId => config != null ? config.weaponId : WeaponId.None;
+
     public virtual bool CanFire()
     {
         if (config == null || config.fireRate <= 0f) return true;
