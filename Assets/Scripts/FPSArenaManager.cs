@@ -12,6 +12,10 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private Transform spawnA;
     [SerializeField] private Transform spawnB;
 
+    [Header("Weapon Spawns")]
+    [SerializeField] private Transform weaponSpawnA;
+    [SerializeField] private Transform weaponSpawnB;
+
     [Header("Local Player VR / FPS Setup")]
     [SerializeField] private Transform xrRigRoot;
     [SerializeField] private Image fadeImage;
@@ -25,6 +29,7 @@ public class FPSArenaManager : NetworkBehaviour
 
     [Header("Health")]
     [SerializeField] private GameObject healthUI;
+    [SerializeField] private LayerMask damageLayerMask;
 
     void Awake()
     {
@@ -43,13 +48,18 @@ public class FPSArenaManager : NetworkBehaviour
             }
         }
 
-        StartCoroutine(DuelTransitionRoutine(true, ClassType.Pawn));
+        bool iAmWhite = NetworkManager.Singleton.IsHost;
+        ClassType myClass = ClassType.Pawn;
+
+        StartCoroutine(DuelTransitionRoutine(iAmWhite, myClass));
     }
 
     [Rpc(SendTo.Everyone)]
     public void EndDuelRpc()
     {
         healthUI.SetActive(false);
+
+        // TODO: teleport players back to Chess board game
     }
 
     private IEnumerator DuelTransitionRoutine(bool iAmWhite, ClassType myClass)
@@ -68,6 +78,9 @@ public class FPSArenaManager : NetworkBehaviour
         }
 
         healthUI.SetActive(true);
+
+        Transform weaponSpawn = iAmWhite ? weaponSpawnA : weaponSpawnB;
+        SpawnWeaponAt(weaponSpawn, myClass);
 
         yield return new WaitForSeconds(2f);
 
@@ -133,5 +146,83 @@ public class FPSArenaManager : NetworkBehaviour
         if (!IsServer) return;
 
         EndDuelRpc();
+    }
+
+    private void SpawnWeaponAt(Transform weaponSpawn, ClassType myClass)
+    {
+        if (weaponSpawn == null) return;
+
+        WeaponId weaponId = GetWeaponForClass(myClass);
+        if (weaponId == WeaponId.None) return;
+
+        var cfg = WeaponDatabase.Instance.Get(weaponId);
+        if (cfg == null || cfg.weaponPrefab == null)
+        {
+            Debug.LogWarning($"[FPSArenaManager] No WeaponConfig / prefab for {weaponId}");
+            return;
+        }
+
+        GameObject weaponObj = Instantiate(cfg.weaponPrefab, weaponSpawn.position, weaponSpawn.rotation);
+
+        var weaponBase = weaponObj.GetComponent<WeaponBase>();
+        if (weaponBase != null)
+        {
+            weaponBase.Initialise(cfg);
+        }
+    }
+
+    private WeaponId GetWeaponForClass(ClassType classType)
+    {
+        switch (classType)
+        {
+            case ClassType.Pawn: return WeaponId.Rifle;
+            case ClassType.Knight: return WeaponId.Bow;
+            // TODO: Add other classes
+            default: return WeaponId.Rifle;
+        }
+    }
+
+    public void RequestHitscanShot(Vector3 origin, Vector3 direction, float maxRange, float damage)
+    {
+        RequestHitscanShotRpc(origin, direction, maxRange, damage);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, RpcParams rpcParams = default)
+    {
+        Ray ray = new Ray(origin, direction);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Ignore))
+        {
+            var health = hit.collider.GetComponentInParent<PlayerHealth>();
+            if (health != null)
+            {
+                health.TakeDamageRpc(damage);
+            }
+
+            BroadcastHitscanShotRpc(origin, hit.point);
+        }
+        else
+        {
+            Vector3 endPoint = origin + direction * maxRange;
+            BroadcastHitscanShotRpc(origin, endPoint);
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void BroadcastHitscanShotRpc(Vector3 origin, Vector3 hitPoint, RpcParams rpcParams = default)
+    {
+        SpawnTracer(origin, hitPoint);
+        SpawnImpact(hitPoint);
+    }
+
+    private void SpawnTracer(Vector3 from, Vector3 to)
+    {
+        // TODO: line render / trail
+    }
+
+    private void SpawnImpact(Vector3 at)
+    {
+        // TODO: impact particles / decal
     }
 }
