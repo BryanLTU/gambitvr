@@ -48,7 +48,7 @@ public class FPSArenaManager : NetworkBehaviour
             }
         }
 
-        bool iAmWhite = NetworkManager.Singleton.IsHost;
+        bool iAmWhite = IsSessionOwner;
         ClassType myClass = ClassType.Pawn;
 
         StartCoroutine(DuelTransitionRoutine(iAmWhite, myClass));
