@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 1654400741496463050}
   - component: {fileID: 3845207475627435254}
   - component: {fileID: 1550005259618859780}
+  - component: {fileID: 5528877466146443966}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Untagged
@@ -285,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 119824352
+  GlobalObjectIdHash: 1313598579
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 3
@@ -429,6 +430,7 @@ MonoBehaviour:
   pieceType: 0
   pieceColor: 1
   currentSquare: {fileID: 0}
+  IsGrabbed: 0
 --- !u!114 &1550005259618859780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,3 +444,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessPieceXR
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &5528877466146443966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6523745958109708191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a600c3aa69381d04694e6b55df317313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessPieceHighlight
+  highlightPropertyName: _Highlight
+  highlightOnValue: 0.6
+  highlightOffValue: 0

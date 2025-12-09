@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 6723120767008761804}
   - component: {fileID: 4835635058480292344}
   - component: {fileID: 7044970660332576203}
+  - component: {fileID: 1787616002554036429}
   m_Layer: 0
   m_Name: Bishop
   m_TagString: Untagged
@@ -429,6 +430,7 @@ MonoBehaviour:
   pieceType: 3
   pieceColor: 1
   currentSquare: {fileID: 0}
+  IsGrabbed: 0
 --- !u!114 &7044970660332576203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,3 +444,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessPieceXR
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &1787616002554036429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4824035605334883462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a600c3aa69381d04694e6b55df317313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessPieceHighlight
+  highlightPropertyName: _Highlight
+  highlightOnValue: 0.6
+  highlightOffValue: 0

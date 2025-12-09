@@ -2798,6 +2798,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7806765598799797122, guid: 656d5a9e2bd926d4e9208a32d40517d7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7732699005111452419}
+    - targetCorrespondingSourceObject: {fileID: 7806765598799797122, guid: 656d5a9e2bd926d4e9208a32d40517d7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2283609062781963044}
   m_SourcePrefab: {fileID: 100100000, guid: 656d5a9e2bd926d4e9208a32d40517d7, type: 3}
 --- !u!136 &381169207652522303 stripped
 CapsuleCollider:
@@ -3174,6 +3177,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.06
   m_Center: {x: 0.1, y: 0, z: -0.02}
+--- !u!114 &2283609062781963044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7845354016492304340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b567ded8c18e94493ea1fbab89ee63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandChessHighlightController
 --- !u!4 &9090995797272231364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9123954850688422290, guid: 656d5a9e2bd926d4e9208a32d40517d7, type: 3}
@@ -3320,6 +3335,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1899238024095211887, guid: c5733d4e35d799a47b4cd448d5a0b2a0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8254276408103218243}
+    - targetCorrespondingSourceObject: {fileID: 1899238024095211887, guid: c5733d4e35d799a47b4cd448d5a0b2a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4142786626113223058}
   m_SourcePrefab: {fileID: 100100000, guid: c5733d4e35d799a47b4cd448d5a0b2a0, type: 3}
 --- !u!4 &1207194143667860580 stripped
 Transform:
@@ -3631,6 +3649,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.06
   m_Center: {x: -0.1, y: 0, z: -0.02}
+--- !u!114 &4142786626113223058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2235309369337664426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b567ded8c18e94493ea1fbab89ee63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandChessHighlightController
 --- !u!4 &2387022275943264456 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2629663409816175117, guid: c5733d4e35d799a47b4cd448d5a0b2a0, type: 3}

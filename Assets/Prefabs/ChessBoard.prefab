@@ -1699,10 +1699,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessGameNet
   ShowTopMostFoldoutHeaderGroup: 1
-  WhiteClientId:
-    m_InternalValue: 0
-  BlackClientId:
-    m_InternalValue: 0
 --- !u!1 &1693627188910516428
 GameObject:
   m_ObjectHideFlags: 0
