@@ -70,12 +70,14 @@ public class ChessPieceXR : NetworkBehaviour
         var netObj = _piece.GetComponent<NetworkObject>();
         if (target != null)
         {
+            Debug.Log("[ChessPieceXR] Called SubmitMoveRpc from first IF");
             ChessGameNet.Instance.SubmitMoveRpc(netObj.NetworkObjectId, target.file, target.rank);
         }
         else
         {
             if (_piece.currentSquare != null)
             {
+                Debug.Log("[ChessPieceXR] Called SubmitMoveRpc from second IF");
                 ChessGameNet.Instance.SubmitMoveRpc(netObj.NetworkObjectId,_piece.currentSquare.file, _piece.currentSquare.rank);
             }
         }

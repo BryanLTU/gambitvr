@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using XRMultiplayer;
 
 public class ChessGameNet : NetworkBehaviour
 {
@@ -107,6 +108,7 @@ public class ChessGameNet : NetworkBehaviour
         var pieceObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pieceNetworkId];
         var piece = pieceObj.GetComponent<ChessPiece>();
 
+        Utils.Log($"CanClientControlPiece {!CanClientControlPiece(senderId, piece)}");
         if (!CanClientControlPiece(senderId, piece))
             return;
 
