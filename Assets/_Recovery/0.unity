@@ -2014,10 +2014,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2870183592412201011, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3086117704477351315, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 896543136
