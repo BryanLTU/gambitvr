@@ -187,7 +187,7 @@ public class FPSArenaManager : NetworkBehaviour
         RequestHitscanShotRpc(origin, direction, maxRange, damage, weaponId);
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.Server)]
     private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
     {
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
