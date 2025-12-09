@@ -202,7 +202,7 @@ MonoBehaviour:
   healthUI: {fileID: 2045698932}
   damageLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
 --- !u!1001 &510207640
 PrefabInstance:
   m_ObjectHideFlags: 0
