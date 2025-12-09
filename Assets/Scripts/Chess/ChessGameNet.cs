@@ -122,5 +122,22 @@ public class ChessGameNet : NetworkBehaviour
         {
             piece.SetSquare(piece.currentSquare);
         }
+        else
+        {
+            UpdatePiecePositionClientRpc(pieceNetworkId, file, rank);
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void UpdatePiecePositionClientRpc(ulong pieceNetworkId, int file, int rank)
+    {
+        var pieceObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pieceNetworkId];
+        var piece = pieceObj.GetComponent<ChessPiece>();
+
+        var targetSquare = _game.GetSquare(file, rank);
+        if (targetSquare != null)
+        {
+            piece.SetSquare(targetSquare);
+        }
     }
 }
