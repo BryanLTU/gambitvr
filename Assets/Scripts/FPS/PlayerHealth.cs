@@ -16,13 +16,13 @@ public class PlayerHealth : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (IsServer) _health.Value = maxHealth;
+        if (IsSessionOwner) _health.Value = maxHealth;
     }
 
     [Rpc(SendTo.Everyone)]
     public void TakeDamageRpc(float amount)
     {
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
 
         _health.Value = Mathf.Max(0, _health.Value - amount);
 
@@ -32,10 +32,10 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Owner)]
     public void ResetHealthRpc()
     {
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
         _health.Value = maxHealth;
     }
 

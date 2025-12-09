@@ -40,7 +40,7 @@ public class FPSArenaManager : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void StartDuelRpc()
     {
-        if (IsServer)
+        if (IsSessionOwner)
         {
             foreach (var ph in FindObjectsByType<PlayerHealth>(FindObjectsSortMode.None))
             {
@@ -143,7 +143,7 @@ public class FPSArenaManager : NetworkBehaviour
 
     public void PlayerDied(PlayerHealth deadPlayer)
     {
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
 
         EndDuelRpc();
     }
@@ -187,7 +187,7 @@ public class FPSArenaManager : NetworkBehaviour
         RequestHitscanShotRpc(origin, direction, maxRange, damage, weaponId);
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Owner)]
     private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
     {
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;

@@ -9,8 +9,8 @@ public class ChessGameNet : NetworkBehaviour
 
     private ChessGame _game;
 
-    NetworkVariable<ulong> WhiteClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    NetworkVariable<ulong> BlackClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    NetworkVariable<ulong> WhiteClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    NetworkVariable<ulong> BlackClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     private readonly List<ulong> _connectedClients = new();
 
@@ -24,7 +24,7 @@ public class ChessGameNet : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
@@ -44,7 +44,7 @@ public class ChessGameNet : NetworkBehaviour
     {
         base.OnNetworkDespawn();
 
-        if (!IsServer || NetworkManager == null) return;
+        if (!IsSessionOwner) return;
 
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
@@ -69,7 +69,7 @@ public class ChessGameNet : NetworkBehaviour
     private void TryAssignSides()
     {
         // Need both players
-        if (!IsServer || _connectedClients.Count < 2) return;
+        if (!IsSessionOwner || _connectedClients.Count < 2) return;
         // Already assigned
         if (WhiteClientId.Value != 0 || BlackClientId.Value != 0) return;
 
@@ -99,7 +99,7 @@ public class ChessGameNet : NetworkBehaviour
         return CanClientControlPiece(localId, piece);
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Owner)]
     public void SubmitMoveRpc(ulong pieceNetworkId, int file, int rank, RpcParams rpcParams = default)
     {
         ulong senderId = rpcParams.Receive.SenderClientId;
