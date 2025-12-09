@@ -164,6 +164,15 @@ public class FPSArenaManager : NetworkBehaviour
 
         GameObject weaponObj = Instantiate(cfg.weaponPrefab, weaponSpawn.position, weaponSpawn.rotation);
 
+        if (weaponObj.TryGetComponent<NetworkObject>(out var networkObj))
+        {
+            networkObj.Spawn();
+        }
+        else
+        {
+            Debug.LogWarning("[FPSArenaManager] Weapon prefab does not have a NetworkObject component");
+        }
+
         var weaponBase = weaponObj.GetComponent<WeaponBase>();
         if (weaponBase != null)
         {
