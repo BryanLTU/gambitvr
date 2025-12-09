@@ -433,11 +433,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0267a1d338db2bf4c9625e450bbaaad0, type: 3}
---- !u!4 &884477494 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8383550645198025335, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
-  m_PrefabInstance: {fileID: 1619057086}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1072646060 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3050730064767677889, guid: b8cca810024cc994d986af03370cf7a1, type: 3}
@@ -1256,6 +1251,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!20 &1619057088 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 8383550645295993585, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
+  m_PrefabInstance: {fileID: 1619057086}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1736614734 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7174019212652907435, guid: 77ac6b10722bcca4a8baf70e44d89e78, type: 3}
@@ -1711,8 +1711,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClass
   playerClass: 0
-  rightHand: {fileID: 884477494}
-  pawnWeaponPrefab: {fileID: 1593834853813794173, guid: 899183b1ec366fb4aa07564d5c688468, type: 3}
+  Weapon:
+  - {fileID: 2560576646322217142, guid: a6aa8da615972324aa01b9d25e8fbd09, type: 3}
+  - {fileID: 1506580376991181843, guid: de6ddaee53df9e94eac03254f071f323, type: 3}
+  - {fileID: 3492217161513844571, guid: 557f3c40a0c1906489bcecde03b2f96e, type: 3}
+  - {fileID: 1349778835228562506, guid: 20a39d941d8306b42a720c170498582d, type: 3}
+  - {fileID: 6502702719606863675, guid: 9f766d63586f6ee4bb8d1e7421e1245c, type: 3}
+  - {fileID: 6500528534058292527, guid: 81e0f9d91220b7842b1df191e4a51450, type: 3}
+  health: 0
+  playerCam: {fileID: 1619057088}
 --- !u!1001 &101307667741964998
 PrefabInstance:
   m_ObjectHideFlags: 0
