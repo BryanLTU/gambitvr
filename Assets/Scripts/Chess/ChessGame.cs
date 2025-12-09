@@ -265,12 +265,10 @@ public class ChessGame : MonoBehaviour
 
     public bool TryMove(ChessPiece piece, BoardSquare targetSquare)
     {
-        Utils.Log($"pieceColor={piece.pieceColor != currentTurn}");
         if (piece.pieceColor != currentTurn)
             return false;
 
         var legal = GetLegalMoves(piece);
-        Utils.Log($"legal.Contains={!legal.Contains(targetSquare)}");
         if (!legal.Contains(targetSquare))
             return false;
         

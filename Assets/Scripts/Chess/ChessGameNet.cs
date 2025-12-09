@@ -108,16 +108,13 @@ public class ChessGameNet : NetworkBehaviour
         var pieceObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pieceNetworkId];
         var piece = pieceObj.GetComponent<ChessPiece>();
 
-        Utils.Log($"CanClientControlPiece {!CanClientControlPiece(senderId, piece)}");
         if (!CanClientControlPiece(senderId, piece))
             return;
 
         var targetSquare = _game.GetSquare(file, rank);
-        Utils.Log($"targetSquare {targetSquare == null}");
         if (targetSquare == null) return;
 
         bool moved = _game.TryMove(piece, targetSquare);
-        Utils.Log($"moved {!moved} currentSqaure {piece.currentSquare != null}");
         if (!moved && piece.currentSquare != null)
         {
             piece.SetSquare(piece.currentSquare);
