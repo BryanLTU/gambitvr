@@ -9,8 +9,8 @@ public class ChessGameNet : NetworkBehaviour
 
     private ChessGame _game;
 
-    NetworkVariable<ulong> WhiteClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    NetworkVariable<ulong> BlackClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    NetworkVariable<ulong> WhiteClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    NetworkVariable<ulong> BlackClientId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private readonly List<ulong> _connectedClients = new();
 
@@ -99,7 +99,7 @@ public class ChessGameNet : NetworkBehaviour
         return CanClientControlPiece(localId, piece);
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.Server)]
     public void SubmitMoveRpc(ulong pieceNetworkId, int file, int rank, RpcParams rpcParams = default)
     {
         ulong senderId = rpcParams.Receive.SenderClientId;

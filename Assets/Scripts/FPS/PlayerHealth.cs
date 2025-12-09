@@ -8,7 +8,7 @@ public class PlayerHealth : NetworkBehaviour
     [Min(1f)]
     [SerializeField] private float maxHealth = 100f;
 
-    private NetworkVariable<float> _health = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<float> _health = new(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public float Health01 => _health.Value / maxHealth;
 
@@ -16,7 +16,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (IsSessionOwner) _health.Value = maxHealth;
+        if (IsServer) _health.Value = maxHealth;
     }
 
     [Rpc(SendTo.Everyone)]
@@ -32,10 +32,10 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.Server)]
     public void ResetHealthRpc()
     {
-        if (!IsSessionOwner) return;
+        if (!IsServer) return;
         _health.Value = maxHealth;
     }
 
