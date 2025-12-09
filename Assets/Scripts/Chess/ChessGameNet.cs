@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using XRMultiplayer;
 
 public class ChessGameNet : NetworkBehaviour
 {
@@ -24,7 +25,7 @@ public class ChessGameNet : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
@@ -44,7 +45,7 @@ public class ChessGameNet : NetworkBehaviour
     {
         base.OnNetworkDespawn();
 
-        if (!IsServer || NetworkManager == null) return;
+        if (!IsSessionOwner) return;
 
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
@@ -69,7 +70,7 @@ public class ChessGameNet : NetworkBehaviour
     private void TryAssignSides()
     {
         // Need both players
-        if (!IsServer || _connectedClients.Count < 2) return;
+        if (!IsSessionOwner || _connectedClients.Count < 2) return;
         // Already assigned
         if (WhiteClientId.Value != 0 || BlackClientId.Value != 0) return;
 
@@ -117,6 +118,23 @@ public class ChessGameNet : NetworkBehaviour
         if (!moved && piece.currentSquare != null)
         {
             piece.SetSquare(piece.currentSquare);
+        }
+        else
+        {
+            UpdatePiecePositionClientRpc(pieceNetworkId, file, rank);
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void UpdatePiecePositionClientRpc(ulong pieceNetworkId, int file, int rank)
+    {
+        var pieceObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pieceNetworkId];
+        var piece = pieceObj.GetComponent<ChessPiece>();
+
+        var targetSquare = _game.GetSquare(file, rank);
+        if (targetSquare != null)
+        {
+            piece.SetSquare(targetSquare);
         }
     }
 }
