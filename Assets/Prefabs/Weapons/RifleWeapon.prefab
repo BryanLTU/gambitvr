@@ -207,6 +207,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3050473083335013294, guid: 7070f2e474af67a498e180139d5a2df6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4192924794178499649}
+    - targetCorrespondingSourceObject: {fileID: 3050473083335013294, guid: 7070f2e474af67a498e180139d5a2df6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5220944844098628904}
   m_SourcePrefab: {fileID: 100100000, guid: 7070f2e474af67a498e180139d5a2df6, type: 3}
 --- !u!4 &3762369964493779389 stripped
 Transform:
@@ -463,3 +466,18 @@ MonoBehaviour:
   m_MaxAngularVelocityDelta: 20
   handleLeft: {fileID: 347624768519794067}
   handleRight: {fileID: 46477327522221369}
+--- !u!114 &5220944844098628904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951861161741967482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6972e37c238611548ab7a23d203cbac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponIdleFloat
+  floatAmplitude: 0.05
+  floatFrequency: 1.5
+  rotateSpeed: 35
