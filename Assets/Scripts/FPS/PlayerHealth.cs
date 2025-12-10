@@ -17,7 +17,8 @@ public class PlayerHealth : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (NetworkManager.Singleton.IsServer) _health.Value = maxHealth;
+        Debug.Log($"[PlayerHealth] OnNetworkSpawn: IsServer={IsServer}, IsHost={IsHost}, OwnerClientId={OwnerClientId}");
+        if (IsServer) _health.Value = maxHealth;
 
         _health.OnValueChanged += OnHealthChanged;
     }
@@ -36,7 +37,7 @@ public class PlayerHealth : NetworkBehaviour
     public void ApplyDamage(float amount)
     {
         Debug.Log($"IsSessionOwner={IsSessionOwner} IsServer={IsServer} {NetworkManager.Singleton.IsServer} IsHost={IsHost} {NetworkManager.Singleton.IsHost}");
-        if (!NetworkManager.Singleton.IsServer) return;
+        if (!IsServer) return;
 
         _health.Value = Mathf.Max(0, _health.Value - amount);
 
