@@ -173,7 +173,8 @@ public class FPSArenaManager : NetworkBehaviour
             return;
         }
 
-        netObj.SpawnWithOwnership(ownerClientId);
+        // netObj.SpawnWithOwnership(ownerClientId);
+        netObj.Spawn();
 
         if (weaponObj.TryGetComponent<WeaponBase>(out var weaponBase))
         {
