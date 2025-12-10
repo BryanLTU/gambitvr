@@ -151,11 +151,15 @@ public class FPSArenaManager : NetworkBehaviour
         EndDuelRpc();
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void SpawnWeaponServerRpc(ulong ownerClientId, Vector3 position, Quaternion rotation, ClassType classType, RpcParams rpcParams = default)
     {
         WeaponId weaponId = GetWeaponForClass(classType);
-        if (weaponId == WeaponId.None) return;
+        if (weaponId == WeaponId.None)
+        {
+            Debug.LogWarning($"[FPSArenaManager] Could not find weapon for class={classType}");
+            return;   
+        }
 
         var cfg = WeaponDatabase.Instance.Get(weaponId);
         if (cfg == null || cfg.weaponPrefab == null)
@@ -173,8 +177,8 @@ public class FPSArenaManager : NetworkBehaviour
             return;
         }
 
-        // netObj.SpawnWithOwnership(ownerClientId);
-        netObj.Spawn();
+        netObj.SpawnWithOwnership(ownerClientId);
+        // netObj.Spawn();
 
         if (weaponObj.TryGetComponent<WeaponBase>(out var weaponBase))
         {
