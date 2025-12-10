@@ -203,7 +203,7 @@ public class FPSArenaManager : NetworkBehaviour
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
         Ray ray = new Ray(origin, direction);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Collide))
         {
             var health = hit.collider.GetComponentInParent<PlayerHealth>();
             if (health != null)
