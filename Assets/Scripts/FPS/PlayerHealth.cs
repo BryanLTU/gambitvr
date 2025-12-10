@@ -25,7 +25,7 @@ public class PlayerHealth : NetworkBehaviour
 
     public void ApplyDamage(float amount)
     {
-        if (!IsServer)
+        if (!IsSessionOwner)
         {
             Debug.LogWarning("[PlayerHealth] ApplyDamage called on client, ignoring");
             return;
@@ -44,7 +44,6 @@ public class PlayerHealth : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void ResetHealthRpc()
     {
-        if (!IsServer) return;
         _health = maxHealth;
         SendHealthToOwner(1f);
     }
@@ -64,7 +63,7 @@ public class PlayerHealth : NetworkBehaviour
 
     private void SendHealthToOwner(float health01)
     {
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
 
         var target = RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp);
 
