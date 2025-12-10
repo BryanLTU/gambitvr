@@ -201,6 +201,7 @@ public class FPSArenaManager : NetworkBehaviour
 
     public void RequestHitscanShot(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId)
     {
+        Utils.Log("[FPSArenaManager] RequestHitscanShotRpc called");
         RequestHitscanShotRpc(origin, direction, maxRange, damage, weaponId);
     }
 
