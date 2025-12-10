@@ -82,7 +82,6 @@ public class FPSArenaManager : NetworkBehaviour
         Transform weaponSpawn = iAmWhite ? weaponSpawnA : weaponSpawnB;
         if (weaponSpawn != null)
         {
-            Debug.Log("[FPSArenaManager] Called SpawnWeaponServerRpc");
             SpawnWeaponServerRpc(NetworkManager.Singleton.LocalClientId, weaponSpawn.position, weaponSpawn.rotation, myClass);
         }
 
