@@ -204,7 +204,7 @@ public class FPSArenaManager : NetworkBehaviour
         RequestHitscanShotRpc(origin, direction, maxRange, damage, weaponId);
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
     {
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
@@ -212,6 +212,7 @@ public class FPSArenaManager : NetworkBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Collide))
         {
+            Utils.Log("[FPSArenaManager] Shot and hit");
             var health = hit.collider.GetComponentInParent<PlayerHealth>();
             if (health != null)
             {

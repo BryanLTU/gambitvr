@@ -30,7 +30,7 @@ public class PlayerHealth : NetworkBehaviour
 
     private void OnHealthChanged(float oldValue, float newValue)
     {
-        // Utils.Log($"[PlayerHealth] {OwnerClientId} health changed: {oldValue} -> {newValue}");
+        Utils.Log($"[PlayerHealth] {OwnerClientId} health changed: {oldValue} -> {newValue}");
     }
 
     public void ApplyDamage(float amount)
