@@ -9,7 +9,7 @@ public class PlayerHealth : NetworkBehaviour
     [Min(1f)]
     [SerializeField] private float maxHealth = 100f;
 
-    private NetworkVariable<float> _health = new(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<float> _health = new(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public float Health01 => _health.Value / maxHealth;
 
