@@ -15,6 +15,14 @@ public class ChessGameNet : NetworkBehaviour
 
     private readonly List<ulong> _connectedClients = new();
 
+    private bool _duelActive;
+    private ulong _attackerNetId;
+    private ulong _defenderNetId;
+    private ulong _attackerClientId;
+    private ulong _defenderClientId;
+    private int _targetFile;
+    private int _targetRank;
+
     void Awake()
     {
         Instance = this;
@@ -137,4 +145,100 @@ public class ChessGameNet : NetworkBehaviour
             piece.SetSquare(targetSquare);
         }
     }
+
+    public void StartFPSDuel(ChessPiece attacker, ChessPiece defender, BoardSquare targetSquare)
+    {
+        if (!IsSessionOwner) return;
+
+        var attackerNet = attacker.GetComponent<NetworkObject>();
+        var defenderNet = defender.GetComponent<NetworkObject>();
+
+        if (attackerNet == null || defenderNet == null)
+        {
+            Debug.LogError("[ChessGameNet] Duel pieces have no NetworkObject!");
+            return;
+        }
+
+        ulong whiteClient = WhiteClientId.Value;
+        ulong blackClient = BlackClientId.Value;
+
+        ulong attackerClientId = (attacker.pieceColor == PieceColor.White) ? whiteClient : blackClient;
+        ulong defenderClientId = (defender.pieceColor == PieceColor.White) ? whiteClient : blackClient;
+
+        _attackerNetId = attackerNet.NetworkObjectId;
+        _defenderNetId = defenderNet.NetworkObjectId;
+        _attackerClientId = attackerClientId;
+        _defenderClientId = defenderClientId;
+        _targetFile = targetSquare.file;
+        _targetRank = targetSquare.rank;
+        _duelActive = true;
+
+        FPSArenaManager.Instance.StartDuelRpc();
+    }
+
+    public void OnFPSDuelFinished(ulong loserClientId)
+    {
+        if (!IsSessionOwner) return;
+        if (!_duelActive) return;
+
+        bool attackerLost;
+
+        if (loserClientId == _attackerClientId)
+            attackerLost = true;
+        else if (loserClientId == _defenderClientId)
+            attackerLost = false;
+        else
+        {
+            Debug.LogWarning("[ChessGameNet] Duel finished but loser client is neither attacker nor defender");
+            return;
+        }
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_attackerNetId, out var attackerNetObj))
+        {
+            Debug.LogWarning("[ChessGameNet] Attacker object missing on duel resolution");
+            _duelActive = false;
+            return;
+        }
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_defenderNetId, out var defenderNetObj))
+        {
+            Debug.LogWarning("[ChessGameNet] Defender object missing on duel resolution");
+            _duelActive = false;
+            return;
+        }
+
+        var attackerPiece = attackerNetObj.GetComponent<ChessPiece>();
+        var defenderPiece = defenderNetObj.GetComponent<ChessPiece>();
+
+        var targetSquare = _game.GetSquare(_targetFile, _targetRank);
+
+        if (targetSquare == null)
+        {
+            Debug.LogError("[ChessGameNet] Target square missing on duel resolution");
+            _duelActive = false;
+            return;
+        }
+
+        bool attackerWon = !attackerLost;
+
+        _game.ResolveFpsDuel(attackerPiece, defenderPiece, targetSquare, attackerWon);
+
+        if (attackerWon)
+        {
+            var defenderNet = defenderNetObj.GetComponent<NetworkObject>();
+            if (defenderNet != null && defenderNet.IsSpawned)
+                defenderNet.Despawn(true);
+
+            UpdatePiecePositionClientRpc(_attackerNetId, _targetFile, _targetRank);
+        }
+        else
+        {
+            var attackerNet = attackerNetObj.GetComponent<NetworkObject>();
+            if (attackerNet != null && attackerNet.IsSpawned)
+                attackerNet.Despawn(true);
+        }
+
+        _duelActive = false;
+    }
+
 }

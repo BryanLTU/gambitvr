@@ -275,7 +275,12 @@ public class ChessGame : MonoBehaviour
         var existing = GetPieceAt(targetSquare.file, targetSquare.rank);
         if (existing != null && existing.pieceColor != piece.pieceColor)
         {
-            FPSArenaManager.Instance.StartDuelRpc();
+            if (ChessGameNet.Instance != null)
+            {
+                ChessGameNet.Instance.StartFPSDuel(piece, existing, targetSquare);
+            }
+
+            return false;
         }
 
         var fromSquare = piece.currentSquare;
@@ -288,4 +293,34 @@ public class ChessGame : MonoBehaviour
 
         return true;
     }
+
+    public void ResolveFpsDuel(ChessPiece attacker, ChessPiece defender, BoardSquare targetSquare, bool attackerWon)
+    {
+        if (attackerWon)
+        {
+            if (defender != null && defender.currentSquare != null)
+            {
+                board[defender.currentSquare.file, defender.currentSquare.rank] = null;
+            }
+
+            var fromSquare = attacker.currentSquare;
+            if (fromSquare != null)
+            {
+                board[fromSquare.file, fromSquare.rank] = null;
+            }
+
+            board[targetSquare.file, targetSquare.rank] = attacker;
+            attacker.SetSquare(targetSquare);
+        }
+        else
+        {
+            if (attacker != null && attacker.currentSquare != null)
+            {
+                board[attacker.currentSquare.file, attacker.currentSquare.rank] = null;
+            }
+        }
+
+        currentTurn = (currentTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+    }
+
 }

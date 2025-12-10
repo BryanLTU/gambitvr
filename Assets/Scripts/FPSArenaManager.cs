@@ -31,10 +31,21 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private GameObject healthUI;
     [SerializeField] private LayerMask damageLayerMask;
 
+    [Header("Return to Chess Board")]
+    [SerializeField] private Transform chessSpawnWhite;
+    [SerializeField] private Transform chessSpawnBlack;
+
+    private Vector3 _wallsStartPos;
+    private Vector3 _savedXrPos;
+    private Quaternion _savedXrRot;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        if (wallsRoot != null)
+            _wallsStartPos = wallsRoot.position;
     }
 
     [Rpc(SendTo.Everyone)]
@@ -59,11 +70,17 @@ public class FPSArenaManager : NetworkBehaviour
     {
         healthUI.SetActive(false);
 
-        // TODO: teleport players back to Chess board game
+        StartCoroutine(ReturnFromDuelRoutine());
     }
 
     private IEnumerator DuelTransitionRoutine(bool iAmWhite, ClassType myClass)
     {
+         if (xrRigRoot != null)
+        {
+            _savedXrPos = xrRigRoot.position;
+            _savedXrRot = xrRigRoot.rotation;
+        }
+
         yield return Fade(1f, 0.5f);
 
         Transform target = iAmWhite ? spawnA : spawnB;
@@ -93,6 +110,33 @@ public class FPSArenaManager : NetworkBehaviour
 
         yield return StartCountdown();
     }
+
+    private IEnumerator ReturnFromDuelRoutine()
+    {
+        yield return Fade(1f, 0.5f);
+
+        bool iAmWhite = IsSessionOwner;
+
+        if (xrRigRoot != null)
+        {
+            Transform chessSpawn = iAmWhite ? chessSpawnWhite : chessSpawnBlack;
+
+            if (chessSpawn != null)
+            {
+                xrRigRoot.SetPositionAndRotation(chessSpawn.position, chessSpawn.rotation);
+            }
+            else
+            {
+                xrRigRoot.SetPositionAndRotation(_savedXrPos, _savedXrRot);
+            }
+        }
+
+        if (wallsRoot != null)
+            wallsRoot.position = _wallsStartPos;
+
+        yield return Fade(0f, 0.5f);
+    }
+
 
     private IEnumerator Fade(float targetAlpha, float duration)
     {
@@ -147,6 +191,13 @@ public class FPSArenaManager : NetworkBehaviour
     public void PlayerDied(PlayerHealth deadPlayer)
     {
         if (!IsSessionOwner) return;
+
+        ulong loserClientId = deadPlayer.OwnerClientId;
+
+        if (ChessGameNet.Instance != null)
+        {
+            ChessGameNet.Instance.OnFPSDuelFinished(loserClientId);
+        }
 
         EndDuelRpc();
     }
