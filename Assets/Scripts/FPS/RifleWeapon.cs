@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs.Readers;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using XRMultiplayer;
 
 public class RifleWeapon : WeaponBase
 {
@@ -65,6 +66,7 @@ public class RifleWeapon : WeaponBase
         Vector3 origin = muzzle.position;
         Vector3 dir = muzzle.forward;
 
-        FPSArenaManager.Instance.RequestHitscanShot(origin, dir, config.maxRange, config.damage, config.weaponId);
+        Utils.Log("[RifleWeapon] Fire");
+        FPSArenaManager.Instance.RequestHitscanShotRpc(origin, dir, config.maxRange, config.damage, config.weaponId);
     }
 }
