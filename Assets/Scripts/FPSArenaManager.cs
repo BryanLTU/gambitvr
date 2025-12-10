@@ -180,12 +180,27 @@ public class FPSArenaManager : NetworkBehaviour
         // netObj.SpawnWithOwnership(ownerClientId);
         netObj.Spawn();
 
+        InitWeaponClientRpc(netObj.NetworkObjectId, weaponId);
+
         if (weaponObj.TryGetComponent<WeaponBase>(out var weaponBase))
         {
             weaponBase.Initialise(cfg);
         }
 
         Debug.Log($"Weapon spawned for client {ownerClientId} at position {position}");
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void InitWeaponClientRpc(ulong weaponNetId, WeaponId weaponId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponNetId, out var netObj))
+        {
+            if (netObj.TryGetComponent<WeaponBase>(out var weaponBase))
+            {
+                var cfg = WeaponDatabase.Instance.Get(weaponId);
+                weaponBase.Initialise(cfg);
+            }
+        }
     }
 
     private WeaponId GetWeaponForClass(ClassType classType)

@@ -53,7 +53,7 @@ public class RifleWeapon : WeaponBase
 
     void Update()
     {
-        if (!isHeld || config == null || muzzle == null) return;
+        if (!isHeld || muzzle == null) return;
 
         if (m_TriggerInput.ReadValue() >= 0.5f)
         {
@@ -67,6 +67,6 @@ public class RifleWeapon : WeaponBase
         Vector3 dir = muzzle.forward;
 
         Utils.Log("[RifleWeapon] Fire");
-        FPSArenaManager.Instance.RequestHitscanShotRpc(origin, dir, config.maxRange, config.damage, config.weaponId);
+        FPSArenaManager.Instance.RequestHitscanShot(origin, dir, config.maxRange, config.damage, config.weaponId);
     }
 }
