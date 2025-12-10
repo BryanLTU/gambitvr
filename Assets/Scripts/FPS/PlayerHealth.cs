@@ -9,39 +9,33 @@ public class PlayerHealth : NetworkBehaviour
     [Min(1f)]
     [SerializeField] private float maxHealth = 100f;
 
-    private NetworkVariable<float> _health = new(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
-    public float Health01 => _health.Value / maxHealth;
+    private float _health;
+    public float Health01 => maxHealth > 0f ? _health / maxHealth : 0f;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
-        Debug.Log($"[PlayerHealth] OnNetworkSpawn: IsServer={IsServer}, IsHost={IsHost}, OwnerClientId={OwnerClientId}");
-        if (IsServer) _health.Value = maxHealth;
-
-        _health.OnValueChanged += OnHealthChanged;
-    }
-
-    private void OnDestroy()
-    {
-        base.OnDestroy();
-        _health.OnValueChanged -= OnHealthChanged;
-    }
-
-    private void OnHealthChanged(float oldValue, float newValue)
-    {
-        Utils.Log($"[PlayerHealth] {OwnerClientId} health changed: {oldValue} -> {newValue}");
+        if (IsSessionOwner)
+        {
+            _health = maxHealth;
+            SendHealthToOwner(_health / maxHealth);
+        }
     }
 
     public void ApplyDamage(float amount)
     {
-        Debug.Log($"IsSessionOwner={IsSessionOwner} IsServer={IsServer} {NetworkManager.Singleton.IsServer} IsHost={IsHost} {NetworkManager.Singleton.IsHost}");
-        if (!IsServer) return;
+        if (!IsServer)
+        {
+            Debug.LogWarning("[PlayerHealth] ApplyDamage called on client, ignoring");
+            return;
+        }
 
-        _health.Value = Mathf.Max(0, _health.Value - amount);
+        _health = Mathf.Max(0, _health - amount);
 
-        if (_health.Value <= 0f)
+        SendHealthToOwner(_health / maxHealth);
+
+        if (_health <= 0f)
         {
             OnDeath();
         }
@@ -50,12 +44,30 @@ public class PlayerHealth : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void ResetHealthRpc()
     {
-        if (!NetworkManager.Singleton.IsServer) return;
-        _health.Value = maxHealth;
+        if (!IsServer) return;
+        _health = maxHealth;
+        SendHealthToOwner(1f);
     }
 
     private void OnDeath()
     {
         FPSArenaManager.Instance.PlayerDied(this);
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void SendHealthClientRpc(float newHealth, RpcParams rpcParams = default)
+    {
+        var ui = FindFirstObjectByType<HandHealthUI>();
+        if (ui != null)
+            ui.SetHealth01(newHealth);
+    }
+
+    private void SendHealthToOwner(float health01)
+    {
+        if (!IsServer) return;
+
+        var target = RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp);
+
+        SendHealthClientRpc(health01, target);
     }
 }
