@@ -80,7 +80,10 @@ public class FPSArenaManager : NetworkBehaviour
         healthUI.SetActive(true);
 
         Transform weaponSpawn = iAmWhite ? weaponSpawnA : weaponSpawnB;
-        SpawnWeaponAt(weaponSpawn, myClass);
+        if (weaponSpawn != null)
+        {
+            SpawnWeaponServerRpc(NetworkManager.Singleton.LocalClientId, weaponSpawn.position, weaponSpawn.rotation, myClass);
+        }
 
         yield return new WaitForSeconds(2f);
 
@@ -148,11 +151,10 @@ public class FPSArenaManager : NetworkBehaviour
         EndDuelRpc();
     }
 
-    private void SpawnWeaponAt(Transform weaponSpawn, ClassType myClass)
+    [Rpc(SendTo.Server)]
+    private void SpawnWeaponServerRpc(ulong ownerClientId, Vector3 position, Quaternion rotation, ClassType classType, RpcParams rpcParams = default)
     {
-        if (weaponSpawn == null) return;
-
-        WeaponId weaponId = GetWeaponForClass(myClass);
+        WeaponId weaponId = GetWeaponForClass(classType);
         if (weaponId == WeaponId.None) return;
 
         var cfg = WeaponDatabase.Instance.Get(weaponId);
@@ -162,19 +164,18 @@ public class FPSArenaManager : NetworkBehaviour
             return;
         }
 
-        GameObject weaponObj = Instantiate(cfg.weaponPrefab, weaponSpawn.position, weaponSpawn.rotation);
+        GameObject weaponObj = Instantiate(cfg.weaponPrefab, position, rotation);
 
-        if (weaponObj.TryGetComponent<NetworkObject>(out var networkObj))
+        if (!weaponObj.TryGetComponent<NetworkObject>(out var netObj))
         {
-            networkObj.Spawn();
-        }
-        else
-        {
-            Debug.LogWarning("[FPSArenaManager] Weapon prefab does not have a NetworkObject component");
+            Debug.LogError("[FPSArenaManager] Weapon prefab does not have a NetworkObject component");
+            Destroy(weaponObj);
+            return;
         }
 
-        var weaponBase = weaponObj.GetComponent<WeaponBase>();
-        if (weaponBase != null)
+        netObj.SpawnWithOwnership(ownerClientId);
+
+        if (weaponObj.TryGetComponent<WeaponBase>(out var weaponBase))
         {
             weaponBase.Initialise(cfg);
         }
