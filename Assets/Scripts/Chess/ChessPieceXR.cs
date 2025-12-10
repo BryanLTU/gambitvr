@@ -14,6 +14,7 @@ public class ChessPieceXR : NetworkBehaviour
     private XRGrabInteractable _grabInteractable;
     private List<BoardSquare> _currentLegalMoves;
 
+
     void Awake()
     {
         _piece = GetComponent<ChessPiece>();
@@ -50,7 +51,10 @@ public class ChessPieceXR : NetworkBehaviour
 
         _currentLegalMoves = ChessGame.Instance.GetLegalMoves(_piece);
         foreach (var sq in _currentLegalMoves)
-            sq.SetHighlight(true);
+            sq.SetHighlightRecommend(true);
+
+        if (_piece.TryGetComponent<Collider>(out var col))
+            col.enabled = true;
     }
 
     void OnRelease(SelectExitEventArgs args)
@@ -62,7 +66,11 @@ public class ChessPieceXR : NetworkBehaviour
         if (_currentLegalMoves != null)
         {
             foreach (var sq in _currentLegalMoves)
+            {
                 sq.SetHighlight(false);
+                sq.SetHighlightRecommend(false);
+            }
+            _currentLegalMoves = null;
         }
 
         BoardSquare target = FindClosestSquare();
@@ -103,5 +111,28 @@ public class ChessPieceXR : NetworkBehaviour
         }
 
         return best;
+    }
+
+    void Update()
+    {
+        if (!_piece.IsGrabbed || _currentLegalMoves == null) return;
+
+        foreach (var sq in _currentLegalMoves)
+        {
+            float distance = Vector3.Distance(transform.position, sq.transform.position);
+            float threshold = 0.05f;
+
+            if (distance < threshold)
+            {
+                sq.SetHighlight(true);
+                sq.SetHighlightRecommend(false);
+
+            }
+            else
+            {
+                sq.SetHighlight(false);
+                sq.SetHighlightRecommend(true);
+            }
+        }
     }
 }
