@@ -179,6 +179,8 @@ public class FPSArenaManager : NetworkBehaviour
         {
             weaponBase.Initialise(cfg);
         }
+
+        Debug.Log($"Weapon spawned for client {ownerClientId} at position {position}");
     }
 
     private WeaponId GetWeaponForClass(ClassType classType)

@@ -9,7 +9,7 @@ public class PlayerHealth : NetworkBehaviour
     [Min(1f)]
     [SerializeField] private float maxHealth = 100f;
 
-    private NetworkVariable<float> _health = new(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<float> _health = new(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public float Health01 => _health.Value / maxHealth;
 
@@ -35,6 +35,7 @@ public class PlayerHealth : NetworkBehaviour
 
     public void ApplyDamage(float amount)
     {
+        Debug.Log($"IsSessionOwner={IsSessionOwner} IsServer={IsServer} {NetworkManager.Singleton.IsServer} IsHost={IsHost} {NetworkManager.Singleton.IsHost}");
         if (!IsSessionOwner) return;
 
         _health.Value = Mathf.Max(0, _health.Value - amount);
