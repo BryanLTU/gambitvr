@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,10 +32,23 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private GameObject healthUI;
     [SerializeField] private LayerMask damageLayerMask;
 
+    [Header("Return to Chess Board")]
+    [SerializeField] private Transform chessSpawnWhite;
+    [SerializeField] private Transform chessSpawnBlack;
+
+    private Vector3 _wallsStartPos;
+    private Vector3 _savedXrPos;
+    private Quaternion _savedXrRot;
+
+    private readonly List<ulong> _spawnedWeaponNetIds = new();
+
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        if (wallsRoot != null)
+            _wallsStartPos = wallsRoot.position;
     }
 
     [Rpc(SendTo.Everyone)]
@@ -48,7 +62,7 @@ public class FPSArenaManager : NetworkBehaviour
             }
         }
 
-        bool iAmWhite = NetworkManager.Singleton.IsHost;
+        bool iAmWhite = IsSessionOwner;
         ClassType myClass = ClassType.Pawn;
 
         StartCoroutine(DuelTransitionRoutine(iAmWhite, myClass));
@@ -59,11 +73,17 @@ public class FPSArenaManager : NetworkBehaviour
     {
         healthUI.SetActive(false);
 
-        // TODO: teleport players back to Chess board game
+        StartCoroutine(ReturnFromDuelRoutine());
     }
 
     private IEnumerator DuelTransitionRoutine(bool iAmWhite, ClassType myClass)
     {
+         if (xrRigRoot != null)
+        {
+            _savedXrPos = xrRigRoot.position;
+            _savedXrRot = xrRigRoot.rotation;
+        }
+
         yield return Fade(1f, 0.5f);
 
         Transform target = iAmWhite ? spawnA : spawnB;
@@ -80,7 +100,10 @@ public class FPSArenaManager : NetworkBehaviour
         healthUI.SetActive(true);
 
         Transform weaponSpawn = iAmWhite ? weaponSpawnA : weaponSpawnB;
-        SpawnWeaponAt(weaponSpawn, myClass);
+        if (weaponSpawn != null)
+        {
+            SpawnWeaponServerRpc(NetworkManager.Singleton.LocalClientId, weaponSpawn.position, weaponSpawn.rotation, myClass);
+        }
 
         yield return new WaitForSeconds(2f);
 
@@ -90,6 +113,33 @@ public class FPSArenaManager : NetworkBehaviour
 
         yield return StartCountdown();
     }
+
+    private IEnumerator ReturnFromDuelRoutine()
+    {
+        yield return Fade(1f, 0.5f);
+
+        bool iAmWhite = IsSessionOwner;
+
+        if (xrRigRoot != null)
+        {
+            Transform chessSpawn = iAmWhite ? chessSpawnWhite : chessSpawnBlack;
+
+            if (chessSpawn != null)
+            {
+                xrRigRoot.SetPositionAndRotation(chessSpawn.position, chessSpawn.rotation);
+            }
+            else
+            {
+                xrRigRoot.SetPositionAndRotation(_savedXrPos, _savedXrRot);
+            }
+        }
+
+        if (wallsRoot != null)
+            wallsRoot.position = _wallsStartPos;
+
+        yield return Fade(0f, 0.5f);
+    }
+
 
     private IEnumerator Fade(float targetAlpha, float duration)
     {
@@ -145,15 +195,27 @@ public class FPSArenaManager : NetworkBehaviour
     {
         if (!IsSessionOwner) return;
 
+        ulong loserClientId = deadPlayer.OwnerClientId;
+
+        if (ChessGameNet.Instance != null)
+        {
+            ChessGameNet.Instance.OnFPSDuelFinished(loserClientId);
+        }
+
+        CleanupWeapons();
+
         EndDuelRpc();
     }
 
-    private void SpawnWeaponAt(Transform weaponSpawn, ClassType myClass)
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    private void SpawnWeaponServerRpc(ulong ownerClientId, Vector3 position, Quaternion rotation, ClassType classType, RpcParams rpcParams = default)
     {
-        if (weaponSpawn == null) return;
-
-        WeaponId weaponId = GetWeaponForClass(myClass);
-        if (weaponId == WeaponId.None) return;
+        WeaponId weaponId = GetWeaponForClass(classType);
+        if (weaponId == WeaponId.None)
+        {
+            Debug.LogWarning($"[FPSArenaManager] Could not find weapon for class={classType}");
+            return;   
+        }
 
         var cfg = WeaponDatabase.Instance.Get(weaponId);
         if (cfg == null || cfg.weaponPrefab == null)
@@ -162,12 +224,40 @@ public class FPSArenaManager : NetworkBehaviour
             return;
         }
 
-        GameObject weaponObj = Instantiate(cfg.weaponPrefab, weaponSpawn.position, weaponSpawn.rotation);
+        GameObject weaponObj = Instantiate(cfg.weaponPrefab, position, rotation);
 
-        var weaponBase = weaponObj.GetComponent<WeaponBase>();
-        if (weaponBase != null)
+        if (!weaponObj.TryGetComponent<NetworkObject>(out var netObj))
+        {
+            Debug.LogError("[FPSArenaManager] Weapon prefab does not have a NetworkObject component");
+            Destroy(weaponObj);
+            return;
+        }
+
+        // netObj.SpawnWithOwnership(ownerClientId);
+        netObj.Spawn();
+
+        _spawnedWeaponNetIds.Add(netObj.NetworkObjectId);
+
+        InitWeaponClientRpc(netObj.NetworkObjectId, weaponId);
+
+        if (weaponObj.TryGetComponent<WeaponBase>(out var weaponBase))
         {
             weaponBase.Initialise(cfg);
+        }
+
+        Debug.Log($"Weapon spawned for client {ownerClientId} at position {position}");
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void InitWeaponClientRpc(ulong weaponNetId, WeaponId weaponId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponNetId, out var netObj))
+        {
+            if (netObj.TryGetComponent<WeaponBase>(out var weaponBase))
+            {
+                var cfg = WeaponDatabase.Instance.Get(weaponId);
+                weaponBase.Initialise(cfg);
+            }
         }
     }
 
@@ -184,21 +274,23 @@ public class FPSArenaManager : NetworkBehaviour
 
     public void RequestHitscanShot(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId)
     {
+        Utils.Log("[FPSArenaManager] RequestHitscanShotRpc called");
         RequestHitscanShotRpc(origin, direction, maxRange, damage, weaponId);
     }
 
-    [Rpc(SendTo.Owner)]
-    private void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    public void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
     {
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
         Ray ray = new Ray(origin, direction);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, damageLayerMask, QueryTriggerInteraction.Collide))
         {
+            Utils.Log("[FPSArenaManager] Shot and hit");
             var health = hit.collider.GetComponentInParent<PlayerHealth>();
             if (health != null)
             {
-                health.TakeDamageRpc(damage);
+                health.ApplyDamage(damage);
             }
             
             ApplyKnockback(hit, direction, cfg);
@@ -258,5 +350,27 @@ public class FPSArenaManager : NetworkBehaviour
         if (!weaponConfig.knockbackChessPieces && rb.transform.CompareTag("Chess")) return;
 
         rb.AddForceAtPosition(direction.normalized * weaponConfig.knockbackForce, hit.point, ForceMode.Impulse);
+    }
+
+    private void CleanupWeapons()
+    {
+        if (!IsSessionOwner) return;
+
+        var spawnManager = NetworkManager.Singleton.SpawnManager;
+
+        for (int i = _spawnedWeaponNetIds.Count - 1; i >= 0; i--)
+        {
+            ulong netId = _spawnedWeaponNetIds[i];
+
+            if (spawnManager.SpawnedObjects.TryGetValue(netId, out var netObj))
+            {
+                if (netObj != null && netObj.IsSpawned)
+                {
+                    netObj.Despawn(true);
+                }
+            }
+
+            _spawnedWeaponNetIds.RemoveAt(i);
+        }
     }
 }

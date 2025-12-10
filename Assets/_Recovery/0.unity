@@ -228,7 +228,7 @@ MonoBehaviour:
   healthUI: {fileID: 2045698932}
   damageLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
 --- !u!1 &165276303 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8645823499921496504, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
