@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,6 +39,8 @@ public class FPSArenaManager : NetworkBehaviour
     private Vector3 _wallsStartPos;
     private Vector3 _savedXrPos;
     private Quaternion _savedXrRot;
+
+    private readonly List<ulong> _spawnedWeaponNetIds = new();
 
     void Awake()
     {
@@ -199,6 +202,8 @@ public class FPSArenaManager : NetworkBehaviour
             ChessGameNet.Instance.OnFPSDuelFinished(loserClientId);
         }
 
+        CleanupWeapons();
+
         EndDuelRpc();
     }
 
@@ -230,6 +235,8 @@ public class FPSArenaManager : NetworkBehaviour
 
         // netObj.SpawnWithOwnership(ownerClientId);
         netObj.Spawn();
+
+        _spawnedWeaponNetIds.Add(netObj.NetworkObjectId);
 
         InitWeaponClientRpc(netObj.NetworkObjectId, weaponId);
 
@@ -343,5 +350,27 @@ public class FPSArenaManager : NetworkBehaviour
         if (!weaponConfig.knockbackChessPieces && rb.transform.CompareTag("Chess")) return;
 
         rb.AddForceAtPosition(direction.normalized * weaponConfig.knockbackForce, hit.point, ForceMode.Impulse);
+    }
+
+    private void CleanupWeapons()
+    {
+        if (!IsSessionOwner) return;
+
+        var spawnManager = NetworkManager.Singleton.SpawnManager;
+
+        for (int i = _spawnedWeaponNetIds.Count - 1; i >= 0; i--)
+        {
+            ulong netId = _spawnedWeaponNetIds[i];
+
+            if (spawnManager.SpawnedObjects.TryGetValue(netId, out var netObj))
+            {
+                if (netObj != null && netObj.IsSpawned)
+                {
+                    netObj.Despawn(true);
+                }
+            }
+
+            _spawnedWeaponNetIds.RemoveAt(i);
+        }
     }
 }

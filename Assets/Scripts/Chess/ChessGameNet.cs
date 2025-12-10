@@ -225,20 +225,34 @@ public class ChessGameNet : NetworkBehaviour
 
         if (attackerWon)
         {
-            var defenderNet = defenderNetObj.GetComponent<NetworkObject>();
-            if (defenderNet != null && defenderNet.IsSpawned)
-                defenderNet.Despawn(true);
+            DespawnPieceOwnedBy(_defenderNetId, _defenderClientId);
 
             UpdatePiecePositionClientRpc(_attackerNetId, _targetFile, _targetRank);
         }
         else
         {
-            var attackerNet = attackerNetObj.GetComponent<NetworkObject>();
-            if (attackerNet != null && attackerNet.IsSpawned)
-                attackerNet.Despawn(true);
+            DespawnPieceOwnedBy(_attackerNetId, _attackerClientId);
         }
 
         _duelActive = false;
     }
 
+    private void DespawnPieceOwnedBy(ulong pieceNetId, ulong ownerClientId)
+    {
+        var target = RpcTarget.Single(ownerClientId, RpcTargetUse.Temp);
+        DespawnPieceClientRpc(pieceNetId, target);
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void DespawnPieceClientRpc(ulong pieceNetId, RpcParams rpcParams = default)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(pieceNetId, out var netObj))
+        {
+            netObj.Despawn(true);
+        }
+        else
+        {
+            Debug.LogWarning($"[ChessGameNet] DespawnPieceClientRpc: piece {pieceNetId} not found on client {NetworkManager.Singleton.LocalClientId}");
+        }
+    }
 }
