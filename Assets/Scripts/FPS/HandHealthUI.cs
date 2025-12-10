@@ -8,7 +8,7 @@ public class HandHealthUI : MonoBehaviour
 
     private PlayerHealth _localHealth;
 
-    void Start()
+    void Awake()
     {
         TryGetLocalHealth();
 
@@ -42,6 +42,10 @@ public class HandHealthUI : MonoBehaviour
         if (_localHealth == null)
         {
             Debug.LogWarning("[HandHealthUI] Could not find PlayerHealth on local PlayerObject");
+        }
+        else
+        {
+            Debug.Log($"[HandHealthUI] Bound to PlayerHealth of client {localClient.ClientId}");
         }
     }
 
