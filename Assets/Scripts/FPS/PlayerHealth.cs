@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using NUnit.Framework;
+using XRMultiplayer;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -16,13 +17,25 @@ public class PlayerHealth : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (IsServer) _health.Value = maxHealth;
+        if (IsSessionOwner) _health.Value = maxHealth;
+
+        _health.OnValueChanged += OnHealthChanged;
     }
 
-    [Rpc(SendTo.Server)]
-    public void TakeDamageRpc(float amount)
+    private void OnDestroy()
     {
-        if (!IsServer) return;
+        base.OnDestroy();
+        _health.OnValueChanged -= OnHealthChanged;
+    }
+
+    private void OnHealthChanged(float oldValue, float newValue)
+    {
+        // Utils.Log($"[PlayerHealth] {OwnerClientId} health changed: {oldValue} -> {newValue}");
+    }
+
+    public void ApplyDamage(float amount)
+    {
+        if (!IsSessionOwner) return;
 
         _health.Value = Mathf.Max(0, _health.Value - amount);
 
@@ -35,7 +48,7 @@ public class PlayerHealth : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void ResetHealthRpc()
     {
-        if (!IsServer) return;
+        if (!IsSessionOwner) return;
         _health.Value = maxHealth;
     }
 

@@ -208,7 +208,7 @@ public class FPSArenaManager : NetworkBehaviour
             var health = hit.collider.GetComponentInParent<PlayerHealth>();
             if (health != null)
             {
-                health.TakeDamageRpc(damage);
+                health.ApplyDamage(damage);
             }
             
             ApplyKnockback(hit, direction, cfg);

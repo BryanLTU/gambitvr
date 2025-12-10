@@ -38,11 +38,16 @@ public class HandHealthUI : MonoBehaviour
         if (playerObj == null) return;
 
         _localHealth = playerObj.GetComponent<PlayerHealth>();
+
+        if (_localHealth == null)
+        {
+            Debug.LogWarning("[HandHealthUI] Could not find PlayerHealth on local PlayerObject");
+        }
     }
 
     void Update()
     {
-        if (_localHealth == null) return;
+        if (_localHealth == null || healthFill == null) return;
 
         healthFill.value = _localHealth.Health01;
     }
