@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.InputSystem; // NEW
+using UnityEngine.InputSystem;
+using XRMultiplayer; // NEW
 
 public class RuntimeConsole : MonoBehaviour
 {
@@ -219,6 +220,19 @@ public class RuntimeConsole : MonoBehaviour
 
         Register("clear", _ => _content.Clear());
         Register("echo", args => Print(string.Join(" ", args), "info"));
+
+        Register("quickjoin", _ =>
+        {
+            var mgr = XRINetworkGameManager.Instance;
+            if (!mgr)
+            {
+                Print("XRINetworkGameManager not found", "err");
+                return;
+            }
+
+            mgr.QuickJoinLobby();
+            PrintSystem("QuickJoinLobby invoked");
+        });
     }
 
     private void PrintSystem(string msg) => Print(msg, "sys");
