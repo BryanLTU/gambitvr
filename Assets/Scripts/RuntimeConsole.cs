@@ -4,7 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
-using XRMultiplayer; // NEW
+using XRMultiplayer;
+using Unity.Netcode;
 
 public class RuntimeConsole : MonoBehaviour
 {
@@ -233,6 +234,11 @@ public class RuntimeConsole : MonoBehaviour
             mgr.QuickJoinLobby();
             PrintSystem("QuickJoinLobby invoked");
         });
+
+        Register("moverandom", _ =>
+        {
+            MoveRandomMyPiece();
+        });
     }
 
     private void PrintSystem(string msg) => Print(msg, "sys");
@@ -269,5 +275,71 @@ public class RuntimeConsole : MonoBehaviour
 
         if (current.Length > 0) args.Add(current);
         return args.ToArray();
+    }
+
+    private void MoveRandomMyPiece()
+    {
+        if (!ChessGame.Instance || !ChessGameNet.Instance)
+        {
+            Print("ChessGame or ChessGameNet missing", "err");
+            return;
+        }
+
+        if (!ChessGameNet.Instance.TryGetLocalPlayerColor(out var myColor))
+        {
+            Print("Local player has no assigned color yet", "err");
+            return;
+        }
+
+        if (ChessGame.Instance.currentTurn != myColor)
+        {
+            Print($"Not your turn. Current turn: {ChessGame.Instance.currentTurn}", "warn");
+            return;
+        }
+
+        var candidates = new List<(ChessPiece piece, BoardSquare square)>();
+
+        var pieces = FindObjectsByType<ChessPiece>(FindObjectsSortMode.None);
+        foreach (var p in pieces)
+        {
+            if (!p || p.currentSquare == null) continue;
+            if (!ChessGameNet.Instance.CanLocalPlayerControlPiece(p)) continue;
+            if (p.pieceColor != ChessGame.Instance.currentTurn) continue;
+
+            var legal = ChessGame.Instance.GetLegalMoves(p);
+            foreach (var sq in legal)
+            {
+                candidates.Add((p, sq));
+            }
+        }
+
+        if (candidates.Count == 0)
+        {
+            Print("No legal moves available", "err");
+            return;
+        }
+
+        var (piece, target) = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        var nobj = piece.GetComponent<NetworkObject>();
+
+        if (!nobj)
+        {
+            Print($"Piece {piece.name} has no NetworkObject", "err");
+            return;
+        }
+
+        var occupant = ChessGame.Instance.GetPieceAt(target.file, target.rank);
+        bool willDuel = occupant != null && occupant.pieceColor != piece.pieceColor;
+
+        ChessGameNet.Instance.SubmitMoveRpc(nobj.NetworkObjectId, target.file, target.rank);
+
+        if (willDuel)
+        {
+            PrintSystem($"RandomMove: {piece.pieceType} {piece.pieceColor} attacks {occupant.pieceType} at ({target.file},{target.rank}) | Duel");
+        }
+        else
+        {
+            PrintSystem($"RandomMove: {piece.pieceType} {piece.pieceColor} to ({target.file},{target.rank})");
+        }
     }
 }

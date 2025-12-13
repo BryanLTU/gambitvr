@@ -255,4 +255,27 @@ public class ChessGameNet : NetworkBehaviour
             Debug.LogWarning($"[ChessGameNet] DespawnPieceClientRpc: piece {pieceNetId} not found on client {NetworkManager.Singleton.LocalClientId}");
         }
     }
+
+    public bool TryGetLocalPlayerColor(out PieceColor color)
+    {
+        color = PieceColor.White;
+
+        if (!IsClient)
+            return false;
+        
+        ulong clientId = NetworkManager.Singleton.LocalClientId;
+
+        if (WhiteClientId.Value == clientId)
+        {
+            color = PieceColor.White;
+            return true;
+        }
+        else if (BlackClientId.Value == clientId)
+        {
+            color = PieceColor.Black;
+            return true;
+        }
+
+        return false;
+    }
 }
