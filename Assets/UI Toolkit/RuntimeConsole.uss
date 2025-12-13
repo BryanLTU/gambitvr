@@ -1,0 +1,117 @@
+.console-root {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 24px;
+    height: 45%;
+    background-color: rgba(10, 10, 12, 0.92);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgba(255,255,255,0.06);
+    border-right-color: rgba(255,255,255,0.06);
+    border-top-color: rgba(255,255,255,0.06);
+    border-bottom-color: rgba(255,255,255,0.06);
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.console-header {
+    height: 34px;
+    padding-left: 12px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(255,255,255,0.04);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255,255,255,0.06);
+}
+
+.console-title {
+    -unity-font-style: bold;
+    font-size: 13px;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 1px;
+}
+
+.console-hint {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+}
+
+.console-scroll {
+    flex-grow: 1;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.console-content {
+    flex-direction: column;
+    min-height: 0;
+}
+
+.console-inputbar {
+    height: 38px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: rgba(0,0,0,0.35);
+    border-top-width: 1px;
+    border-top-color: rgba(255,255,255,0.06);
+    color: rgba(0, 0, 0, 1);
+}
+
+.console-prompt {
+    width: 18px;
+    color: rgba(255,255,255,0.75);
+    -unity-font-style: bold;
+}
+
+.console-inputbar,
+.console-header {
+    flex-shrink: 0;
+}
+
+.console-input {
+    flex-grow: 1;
+    color: rgba(0,0,0,1);
+    background-color: rgba(255,255,255,0.06);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255,255,255,0.08);
+    border-right-color: rgba(255,255,255,0.08);
+    border-top-color: rgba(255,255,255,0.08);
+    border-bottom-color: rgba(255,255,255,0.08);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.console-line {
+    font-size: 12px;
+    white-space: normal;
+    margin-bottom: 4px;
+    color: rgba(255,255,255,0.85);
+}
+
+.console-line.info { color: rgba(220, 220, 220, 0.90); }
+.console-line.warn { color: rgba(255, 200, 90, 0.95); }
+.console-line.err  { color: rgba(255, 110, 110, 0.95); }
+.console-line.cmd  { color: rgba(120, 200, 255, 0.95); }
+.console-line.sys  { color: rgba(170, 255, 170, 0.90); }

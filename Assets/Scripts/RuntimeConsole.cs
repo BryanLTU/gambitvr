@@ -1,0 +1,259 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.InputSystem; // NEW
+
+public class RuntimeConsole : MonoBehaviour
+{
+    [Header("UI Toolkit Assets")]
+    [SerializeField] private UIDocument uiDocument;
+
+    [Header("Input System")]
+    [SerializeField] private InputActionReference toggleAction;
+
+    private InputAction _runtimeToggleAction;
+
+    private VisualElement _root;
+    private VisualElement _consoleRoot;
+    private ScrollView _scroll;
+    private VisualElement _content;
+    private TextField _input;
+
+    private readonly List<string> _history = new();
+    private int _historyIndex = -1;
+
+    private readonly Dictionary<string, Action<string[]>> _commands =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    private void Awake()
+    {
+        if (!uiDocument) uiDocument = GetComponent<UIDocument>();
+        if (!uiDocument)
+        {
+            Debug.LogError("RuntimeConsole requires a UIDocument.");
+            enabled = false;
+            return;
+        }
+
+        var panelRoot = uiDocument.rootVisualElement.panel.visualTree;
+        _consoleRoot = panelRoot.Q<VisualElement>("console-root");
+        _scroll      = panelRoot.Q<ScrollView>("log-scroll");
+        _content     = panelRoot.Q("log-content");
+        _input       = panelRoot.Q<TextField>("command-input");
+
+        SetVisible(false);
+
+        RegisterBuiltins();
+        _input.RegisterCallback<KeyUpEvent>(OnInputKeyUp);
+        _input.RegisterCallback<KeyDownEvent>(OnInputKeyDown);
+
+        Application.logMessageReceived += OnUnityLog;
+
+        SetupToggleAction();
+
+        PrintSystem("Console ready. Type 'help'.");
+    }
+
+    private void OnEnable()
+    {
+        EnableToggleAction(true);
+    }
+
+    private void OnDisable()
+    {
+        EnableToggleAction(false);
+    }
+
+    private void OnDestroy()
+    {
+        Application.logMessageReceived -= OnUnityLog;
+
+        if (_runtimeToggleAction != null)
+        {
+            _runtimeToggleAction.performed -= OnTogglePerformed;
+            _runtimeToggleAction.Dispose();
+            _runtimeToggleAction = null;
+        }
+    }
+
+    private void SetupToggleAction()
+    {
+        if (toggleAction != null && toggleAction.action != null)
+        {
+            toggleAction.action.performed -= OnTogglePerformed;
+            toggleAction.action.performed += OnTogglePerformed;
+            return;
+        }
+
+        _runtimeToggleAction.performed += OnTogglePerformed;
+    }
+
+    private void EnableToggleAction(bool enabled)
+    {
+        if (toggleAction != null && toggleAction.action != null)
+        {
+            if (enabled) toggleAction.action.Enable();
+            else toggleAction.action.Disable();
+            return;
+        }
+
+        if (_runtimeToggleAction != null)
+        {
+            if (enabled) _runtimeToggleAction.Enable();
+            else _runtimeToggleAction.Disable();
+        }
+    }
+
+    private void OnTogglePerformed(InputAction.CallbackContext _)
+    {
+        bool willShow = _consoleRoot.resolvedStyle.display == DisplayStyle.None;
+        SetVisible(willShow);
+    }
+
+    private void SetVisible(bool visible)
+    {
+        _consoleRoot.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (visible)
+        {
+            _input.Focus();
+            _input.SelectAll();
+        }
+    }
+
+    private void OnUnityLog(string condition, string stackTrace, LogType type)
+    {
+        switch (type)
+        {
+            case LogType.Warning:
+                Print(condition, "warn");
+                break;
+            case LogType.Error:
+            case LogType.Exception:
+            case LogType.Assert:
+                Print(condition, "err");
+                if (!string.IsNullOrEmpty(stackTrace))
+                    Print(stackTrace, "err");
+                break;
+            default:
+                Print(condition, "info");
+                break;
+        }
+    }
+
+    private void OnInputKeyUp(KeyUpEvent evt)
+    {
+        if (evt.keyCode != KeyCode.Return && evt.keyCode != KeyCode.KeypadEnter)
+            return;
+
+        var text = _input.value?.Trim();
+        if (!string.IsNullOrEmpty(text))
+        {
+            Run(text);
+            _history.Add(text);
+            _historyIndex = _history.Count;
+        }
+
+        _input.value = string.Empty;
+        _input.Focus();
+
+        evt.StopPropagation();
+    }
+
+    private void OnInputKeyDown(KeyDownEvent evt)
+    {
+        if (evt.keyCode == KeyCode.UpArrow)
+        {
+            if (_history.Count == 0) return;
+            _historyIndex = Mathf.Clamp(_historyIndex - 1, 0, _history.Count - 1);
+            _input.value = _history[_historyIndex];
+            _input.SelectAll();
+            evt.StopPropagation();
+            return;
+        }
+
+        if (evt.keyCode == KeyCode.DownArrow)
+        {
+            if (_history.Count == 0) return;
+            _historyIndex = Mathf.Clamp(_historyIndex + 1, 0, _history.Count);
+            _input.value = (_historyIndex >= _history.Count) ? string.Empty : _history[_historyIndex];
+            _input.SelectAll();
+            evt.StopPropagation();
+            return;
+        }
+    }
+
+    private void Run(string line)
+    {
+        Print($"> {line}", "cmd");
+
+        var parts = SplitArgs(line);
+        if (parts.Length == 0) return;
+
+        var cmd = parts[0];
+        var args = parts.Skip(1).ToArray();
+
+        if (_commands.TryGetValue(cmd, out var action))
+        {
+            try { action.Invoke(args); }
+            catch (Exception ex) { Print(ex.ToString(), "err"); }
+        }
+        else
+        {
+            Print($"Unknown command '{cmd}'. Type 'help'.", "warn");
+        }
+    }
+
+    private void Register(string name, Action<string[]> handler) => _commands[name] = handler;
+
+    private void RegisterBuiltins()
+    {
+        Register("help", _ =>
+        {
+            PrintSystem("Commands:");
+            foreach (var k in _commands.Keys.OrderBy(x => x))
+                PrintSystem($"- {k}");
+        });
+
+        Register("clear", _ => _content.Clear());
+        Register("echo", args => Print(string.Join(" ", args), "info"));
+    }
+
+    private void PrintSystem(string msg) => Print(msg, "sys");
+
+    private void Print(string msg, string className)
+    {
+        var label = new Label(msg);
+        label.AddToClassList("console-line");
+        label.AddToClassList(className);
+        _content.Add(label);
+
+        _scroll.schedule.Execute(() =>
+        {
+            _scroll.scrollOffset = new Vector2(0, float.MaxValue);
+        }).StartingIn(1);
+    }
+
+    private static string[] SplitArgs(string input)
+    {
+        var args = new List<string>();
+        var current = "";
+        bool inQuotes = false;
+
+        foreach (var c in input)
+        {
+            if (c == '"') { inQuotes = !inQuotes; continue; }
+
+            if (!inQuotes && char.IsWhiteSpace(c))
+            {
+                if (current.Length > 0) { args.Add(current); current = ""; }
+            }
+            else current += c;
+        }
+
+        if (current.Length > 0) args.Add(current);
+        return args.ToArray();
+    }
+}
