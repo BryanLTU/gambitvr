@@ -1,0 +1,17 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/RuntimeConsole.uss?fileID=7433441132597879392&amp;guid=3e7860abee1676643a36a514ffbb1760&amp;type=3#RuntimeConsole" />
+    <ui:VisualElement name="console-root" class="console-root" style="display: none;">
+        <ui:VisualElement name="console-header" class="console-header">
+            <ui:Label name="title" text="CONSOLE" class="console-title" />
+            <ui:VisualElement name="spacer" style="flex-grow: 1;" />
+            <ui:Label name="hint" text="F1 toggle • ↑↓ history • Enter run" class="console-hint" />
+        </ui:VisualElement>
+        <ui:ScrollView name="log-scroll" horizontal-scroller-visibility="Hidden" class="console-scroll">
+            <ui:VisualElement name="log-content" class="console-content" />
+        </ui:ScrollView>
+        <ui:VisualElement name="console-inputbar" class="console-inputbar">
+            <ui:Label name="prompt" text="&gt;" class="console-prompt" />
+            <ui:TextField name="command-input" is-delayed="false" class="console-input" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

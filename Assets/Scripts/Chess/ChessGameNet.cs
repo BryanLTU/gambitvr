@@ -146,6 +146,31 @@ public class ChessGameNet : NetworkBehaviour
         }
     }
 
+    [Rpc(SendTo.Server)]
+    public void ForceDuelRpc(ulong attackerPieceNetId, ulong defenderPieceNetId, int targetFile, int targetRank, RpcParams rpcParams = default)
+    {
+        #if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+        return;
+        #endif
+
+        if (!IsSessionOwner) return;
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(attackerPieceNetId, out var aObj)) return;
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(defenderPieceNetId, out var dObj)) return;
+
+        var attacker = aObj.GetComponent<ChessPiece>();
+        var defender = dObj.GetComponent<ChessPiece>();
+        if (!attacker || !defender) return;
+
+        ulong sender = rpcParams.Receive.SenderClientId;
+        if (!CanClientControlPiece(sender, attacker)) return;
+
+        var targetSquare = _game.GetSquare(targetFile, targetRank);
+        if (!targetSquare) return;
+
+        StartFPSDuel(attacker, defender, targetSquare);
+    }
+
     public void StartFPSDuel(ChessPiece attacker, ChessPiece defender, BoardSquare targetSquare)
     {
         if (!IsSessionOwner) return;
@@ -254,5 +279,28 @@ public class ChessGameNet : NetworkBehaviour
         {
             Debug.LogWarning($"[ChessGameNet] DespawnPieceClientRpc: piece {pieceNetId} not found on client {NetworkManager.Singleton.LocalClientId}");
         }
+    }
+
+    public bool TryGetLocalPlayerColor(out PieceColor color)
+    {
+        color = PieceColor.White;
+
+        if (!IsClient)
+            return false;
+        
+        ulong clientId = NetworkManager.Singleton.LocalClientId;
+
+        if (WhiteClientId.Value == clientId)
+        {
+            color = PieceColor.White;
+            return true;
+        }
+        else if (BlackClientId.Value == clientId)
+        {
+            color = PieceColor.Black;
+            return true;
+        }
+
+        return false;
     }
 }
