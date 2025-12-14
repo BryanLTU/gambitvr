@@ -239,6 +239,11 @@ public class RuntimeConsole : MonoBehaviour
         {
             MoveRandomMyPiece();
         });
+
+        Register("forceduel", _ =>
+        {
+            ForceDuel();
+        });
     }
 
     private void PrintSystem(string msg) => Print(msg, "sys");
@@ -341,5 +346,47 @@ public class RuntimeConsole : MonoBehaviour
         {
             PrintSystem($"RandomMove: {piece.pieceType} {piece.pieceColor} to ({target.file},{target.rank})");
         }
+    }
+
+    private void ForceDuel()
+    {
+        if (!ChessGame.Instance || !ChessGameNet.Instance)
+        {
+            Print("ChessGame/ChessGameNet missing", "err");
+            return;
+        }
+
+        ulong localId = NetworkManager.Singleton.LocalClientId;
+
+        var myPieces = FindObjectsByType<ChessPiece>(FindObjectsSortMode.None)
+            .Where(p => p && p.currentSquare != null && ChessGameNet.Instance.CanClientControlPiece(localId, p))
+            .ToList();
+        var enemyPieces = FindObjectsByType<ChessPiece>(FindObjectsSortMode.None)
+            .Where(p => p && p.currentSquare != null && !ChessGameNet.Instance.CanClientControlPiece(localId, p))
+            .ToList();
+
+        if (myPieces.Count == 0 || enemyPieces.Count == 0)
+        {
+            Print("Missing attacker / defender pieces", "warn");
+            return;
+        }
+
+        var attacker = myPieces[UnityEngine.Random.Range(0, myPieces.Count)];
+        var defender = enemyPieces[UnityEngine.Random.Range(0, enemyPieces.Count)];
+
+        var aN = attacker.GetComponent<NetworkObject>();
+        var dN = defender.GetComponent<NetworkObject>();
+        if (!aN || !dN)
+        {
+            Print("Attacker/defender missing NetworkObject", "err");
+            return;
+        }
+
+        int tf = defender.currentSquare.file;
+        int tr = defender.currentSquare.rank;
+
+        ChessGameNet.Instance.ForceDuelRpc(aN.NetworkObjectId, dN.NetworkObjectId, tf, tr);
+
+        Print($"ForceDuel: {attacker.pieceType} vs {defender.pieceType} at ({tf},{tr})", "sys");
     }
 }
