@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 7586395179442365686}
   - component: {fileID: 3648653514089780417}
   - component: {fileID: 261691772137340907}
+  - component: {fileID: 5449611772017453582}
   m_Layer: 0
   m_Name: Bishop
   m_TagString: Untagged
@@ -286,7 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1994691598
+  GlobalObjectIdHash: 3482251799
   InScenePlacedSourceGlobalObjectIdHash: 3604228747
   DeferredDespawnTick: 0
   Ownership: 3
@@ -459,3 +460,16 @@ MonoBehaviour:
   highlightPropertyName: _Highlight
   highlightOnValue: 0.7
   highlightOffValue: 0
+--- !u!114 &5449611772017453582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067913526094309285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6040e95097c0b1c459ea01b16444761e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PieceIdentity
+  PieceId: 0

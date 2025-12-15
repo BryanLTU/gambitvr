@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 2190563851731116248}
   - component: {fileID: 6089478833266728818}
   - component: {fileID: 8890072862241191302}
+  - component: {fileID: 4850753539642986273}
   m_Layer: 0
   m_Name: Queen
   m_TagString: Untagged
@@ -286,7 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2832077118
+  GlobalObjectIdHash: 1766565094
   InScenePlacedSourceGlobalObjectIdHash: 1426383405
   DeferredDespawnTick: 0
   Ownership: 3
@@ -459,3 +460,16 @@ MonoBehaviour:
   highlightPropertyName: _Highlight
   highlightOnValue: 0.6
   highlightOffValue: 0
+--- !u!114 &4850753539642986273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815685700382409719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6040e95097c0b1c459ea01b16444761e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PieceIdentity
+  PieceId: 0

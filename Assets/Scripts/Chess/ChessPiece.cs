@@ -24,6 +24,8 @@ public class ChessPiece : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (!IsSpawned || !IsOwner) return;
+
         if (!IsGrabbed && currentSquare != null)
         {
             if (!_rb.isKinematic || _rb.useGravity)
@@ -36,6 +38,7 @@ public class ChessPiece : NetworkBehaviour
 
     public void LockToBoard()
     {
+        if (!IsSpawned || !IsOwner) return;
         if (_rb == null) return;
 
         _rb.isKinematic = true;
@@ -44,13 +47,14 @@ public class ChessPiece : NetworkBehaviour
 
     public void FreeFromBoard()
     {
+        if (!IsSpawned || !IsOwner) return;
         if (_rb == null) return;
 
         _rb.isKinematic = false;
         _rb.useGravity = true;
     }
 
-    public void SetSquare(BoardSquare square)
+    public void SetSquare(BoardSquare square, bool lockToBoard = true)
     {
         currentSquare = square;
         if (square != null)
@@ -58,6 +62,9 @@ public class ChessPiece : NetworkBehaviour
             transform.SetPositionAndRotation(square.transform.position + new Vector3(0f, 0.01f, 0f), Quaternion.identity);
         }
 
-        LockToBoard();
+        if (lockToBoard)
+        {
+            LockToBoard();
+        }
     }
 }

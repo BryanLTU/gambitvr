@@ -231,6 +231,8 @@ MonoBehaviour:
     m_Bits: 65
   chessSpawnWhite: {fileID: 0}
   chessSpawnBlack: {fileID: 0}
+  arenaSquareMap: {fileID: 101307667741965004}
+  arenaPiecesRoot: {fileID: 1956155385}
 --- !u!1 &165276303 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8645823499921496504, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
@@ -2392,6 +2394,11 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.26
   m_Center: {x: -0.0000019073486, y: -0.84, z: 0.0000009536743}
+--- !u!4 &1956155385 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3950772036803964908, guid: b8cca810024cc994d986af03370cf7a1, type: 3}
+  m_PrefabInstance: {fileID: 101307667741964998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2003893802 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9041606391487879254, guid: 7dbff402e562c564f868d24480d9b2d2, type: 3}
@@ -2767,6 +2774,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5882413050411048529, guid: b8cca810024cc994d986af03370cf7a1, type: 3}
   m_PrefabInstance: {fileID: 101307667741964998}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &101307667741965004 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2906461601450191929, guid: b8cca810024cc994d986af03370cf7a1, type: 3}
+  m_PrefabInstance: {fileID: 101307667741964998}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c7b68a66cbcea4ab3ab9a5ba9987cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoardSquareMap
 --- !u!1001 &6204060562225937415
 PrefabInstance:
   m_ObjectHideFlags: 0

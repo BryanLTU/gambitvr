@@ -36,11 +36,17 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private Transform chessSpawnWhite;
     [SerializeField] private Transform chessSpawnBlack;
 
+    [Header("Arena Board Sync")]
+    [SerializeField] private BoardSquareMap arenaSquareMap;
+    [SerializeField] private Transform arenaPiecesRoot;
+
     private Vector3 _wallsStartPos;
     private Vector3 _savedXrPos;
     private Quaternion _savedXrRot;
 
     private readonly List<ulong> _spawnedWeaponNetIds = new();
+
+    private readonly Dictionary<int, ChessPiece> _arenaById = new();
 
     void Awake()
     {
@@ -49,6 +55,21 @@ public class FPSArenaManager : NetworkBehaviour
 
         if (wallsRoot != null)
             _wallsStartPos = wallsRoot.position;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (!IsSessionOwner) return;
+
+        _arenaById.Clear();
+
+        foreach (var piece in arenaPiecesRoot.GetComponentsInChildren<ChessPiece>(true))
+        {
+            if (!piece.TryGetComponent<PieceIdentity>(out var ident)) continue;
+            _arenaById[ident.pieceId] = piece;
+        }
     }
 
     [Rpc(SendTo.Everyone)]
@@ -371,6 +392,22 @@ public class FPSArenaManager : NetworkBehaviour
             }
 
             _spawnedWeaponNetIds.RemoveAt(i);
+        }
+    }
+
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    public void SnapArenaToBoardServerRpc(int[] pieceIds, int[] files, int[] ranks)
+    {
+        if (!IsSessionOwner || arenaSquareMap == null) return;
+
+        for (int i = 0; i < pieceIds.Length; i++)
+        {
+            if (!_arenaById.TryGetValue(pieceIds[i], out var arenaPiece)) continue;
+
+            var sq = arenaSquareMap.GetSquare(files[i], ranks[i]);
+            if (sq == null) continue;
+
+            arenaPiece.SetSquare(sq, false);
         }
     }
 }
