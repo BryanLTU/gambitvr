@@ -199,7 +199,7 @@ public class ChessGameNet : NetworkBehaviour
         _duelActive = true;
 
         _game.BuildSnapshotByPieceId(out var ids, out var files, out var ranks);
-        FPSArenaManager.Instance.SnapArenaToBoardServerRpc(ids, files, ranks);
+        FPSArenaManager.Instance.SnapArenaToBoardClientRpc(ids, files, ranks);
 
         FPSArenaManager.Instance.StartDuelRpc();
     }

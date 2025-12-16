@@ -61,8 +61,6 @@ public class FPSArenaManager : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if (!IsSessionOwner) return;
-
         _arenaById.Clear();
 
         foreach (var piece in arenaPiecesRoot.GetComponentsInChildren<ChessPiece>(true))
@@ -395,10 +393,10 @@ public class FPSArenaManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server, RequireOwnership = false)]
-    public void SnapArenaToBoardServerRpc(int[] pieceIds, int[] files, int[] ranks)
+    [Rpc(SendTo.Everyone)]
+    public void SnapArenaToBoardClientRpc(int[] pieceIds, int[] files, int[] ranks)
     {
-        if (!IsSessionOwner || arenaSquareMap == null) return;
+        if (arenaSquareMap == null) return;
 
         for (int i = 0; i < pieceIds.Length; i++)
         {
@@ -407,7 +405,22 @@ public class FPSArenaManager : NetworkBehaviour
             var sq = arenaSquareMap.GetSquare(files[i], ranks[i]);
             if (sq == null) continue;
 
-            arenaPiece.SetSquare(sq, false);
+            arenaPiece.currentSquare = sq;
+
+            var netObj = arenaPiece.GetComponent<NetworkObject>();
+            if (netObj == null || !netObj.IsOwner) continue;
+
+            var nt = arenaPiece.GetComponent<ClientNetworkTransform>();
+            Vector3 pos = sq.transform.position + new Vector3(0f, 0.01f, 0f);
+
+            if (nt != null)
+            {
+                nt.Teleport(pos, Quaternion.identity, arenaPiece.transform.localScale);
+            }
+            else
+            {
+                arenaPiece.transform.SetPositionAndRotation(pos, Quaternion.identity);
+            }
         }
     }
 }
