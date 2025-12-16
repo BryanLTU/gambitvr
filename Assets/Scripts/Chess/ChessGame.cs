@@ -348,4 +348,9 @@ public class ChessGame : MonoBehaviour
         files = fs.ToArray();
         ranks = rs.ToArray();
     }
+
+    public IEnumerable<ChessPiece> GetAllBoardPieces()
+    {
+        return GetComponentsInChildren<ChessPiece>(true);
+    }
 }

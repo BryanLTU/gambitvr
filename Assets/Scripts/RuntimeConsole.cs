@@ -304,7 +304,7 @@ public class RuntimeConsole : MonoBehaviour
 
         var candidates = new List<(ChessPiece piece, BoardSquare square)>();
 
-        var pieces = FindObjectsByType<ChessPiece>(FindObjectsSortMode.None);
+        var pieces = ChessGame.Instance.GetAllBoardPieces();
         foreach (var p in pieces)
         {
             if (!p || p.currentSquare == null) continue;
