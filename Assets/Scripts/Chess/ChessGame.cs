@@ -363,8 +363,6 @@ public class ChessGame : MonoBehaviour
             }
         }
 
-        piece.gameObject.SetActive(false);
-
         piece.currentSquare = null;
     }
 }

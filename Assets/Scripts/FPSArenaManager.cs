@@ -423,4 +423,13 @@ public class FPSArenaManager : NetworkBehaviour
             }
         }
     }
+
+    [Rpc(SendTo.Everyone)]
+    public void SetArenaPieceActiveClientRpc(int pieceId, bool active)
+    {
+        if (_arenaById.TryGetValue(pieceId, out var arenaPiece) && arenaPiece != null)
+        {
+            arenaPiece.gameObject.SetActive(active);
+        }
+    }
 }
