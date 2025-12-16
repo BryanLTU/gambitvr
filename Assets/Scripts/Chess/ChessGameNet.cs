@@ -198,6 +198,9 @@ public class ChessGameNet : NetworkBehaviour
         _targetRank = targetSquare.rank;
         _duelActive = true;
 
+        _game.BuildSnapshotByPieceId(out var ids, out var files, out var ranks);
+        FPSArenaManager.Instance.SnapArenaToBoardClientRpc(ids, files, ranks);
+
         FPSArenaManager.Instance.StartDuelRpc();
     }
 
@@ -248,23 +251,31 @@ public class ChessGameNet : NetworkBehaviour
 
         _game.ResolveFpsDuel(attackerPiece, defenderPiece, targetSquare, attackerWon);
 
+        ulong loserNetId   = attackerWon ? _defenderNetId   : _attackerNetId;
+        ulong loserOwnerId = attackerWon ? _defenderClientId : _attackerClientId;
+
+        HidePieceEverywhereClientRpc(loserNetId);
+        DespawnPieceByActualOwner(loserNetId);
+
         if (attackerWon)
         {
-            DespawnPieceOwnedBy(_defenderNetId, _defenderClientId);
-
             UpdatePiecePositionClientRpc(_attackerNetId, _targetFile, _targetRank);
-        }
-        else
-        {
-            DespawnPieceOwnedBy(_attackerNetId, _attackerClientId);
         }
 
         _duelActive = false;
     }
 
-    private void DespawnPieceOwnedBy(ulong pieceNetId, ulong ownerClientId)
+    private void DespawnPieceByActualOwner(ulong pieceNetId)
     {
-        var target = RpcTarget.Single(ownerClientId, RpcTargetUse.Temp);
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(pieceNetId, out var netObj))
+        {
+            Debug.LogWarning($"[ChessGameNet] DespawnPieceByActualOwner: piece {pieceNetId} not found on session owner");
+            return;
+        }
+
+        ulong actualOwner = netObj.OwnerClientId;
+
+        var target = RpcTarget.Single(actualOwner, RpcTargetUse.Temp);
         DespawnPieceClientRpc(pieceNetId, target);
     }
 
@@ -273,11 +284,13 @@ public class ChessGameNet : NetworkBehaviour
     {
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(pieceNetId, out var netObj))
         {
+            if (!netObj.IsOwner)
+            {
+                Debug.LogWarning($"[ChessGameNet] DespawnPieceClientRpc: local is not owner. local={NetworkManager.Singleton.LocalClientId} owner={netObj.OwnerClientId}");
+                return;
+            }
+
             netObj.Despawn(true);
-        }
-        else
-        {
-            Debug.LogWarning($"[ChessGameNet] DespawnPieceClientRpc: piece {pieceNetId} not found on client {NetworkManager.Singleton.LocalClientId}");
         }
     }
 
@@ -302,5 +315,28 @@ public class ChessGameNet : NetworkBehaviour
         }
 
         return false;
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void HidePieceEverywhereClientRpc(ulong pieceNetId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(pieceNetId, out var netObj))
+        {
+            var go = netObj.gameObject;
+
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+                r.enabled = false;
+
+            foreach (var c in go.GetComponentsInChildren<Collider>(true))
+                c.enabled = false;
+
+            if (go.TryGetComponent<Rigidbody>(out var rb))
+            {
+                rb.isKinematic = true;
+                rb.useGravity = false;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
     }
 }

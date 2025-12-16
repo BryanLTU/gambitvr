@@ -36,11 +36,17 @@ public class FPSArenaManager : NetworkBehaviour
     [SerializeField] private Transform chessSpawnWhite;
     [SerializeField] private Transform chessSpawnBlack;
 
+    [Header("Arena Board Sync")]
+    [SerializeField] private BoardSquareMap arenaSquareMap;
+    [SerializeField] private Transform arenaPiecesRoot;
+
     private Vector3 _wallsStartPos;
     private Vector3 _savedXrPos;
     private Quaternion _savedXrRot;
 
     private readonly List<ulong> _spawnedWeaponNetIds = new();
+
+    private readonly Dictionary<int, ChessPiece> _arenaById = new();
 
     void Awake()
     {
@@ -49,6 +55,19 @@ public class FPSArenaManager : NetworkBehaviour
 
         if (wallsRoot != null)
             _wallsStartPos = wallsRoot.position;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        _arenaById.Clear();
+
+        foreach (var piece in arenaPiecesRoot.GetComponentsInChildren<ChessPiece>(true))
+        {
+            if (!piece.TryGetComponent<PieceIdentity>(out var ident)) continue;
+            _arenaById[ident.pieceId] = piece;
+        }
     }
 
     [Rpc(SendTo.Everyone)]
@@ -371,6 +390,46 @@ public class FPSArenaManager : NetworkBehaviour
             }
 
             _spawnedWeaponNetIds.RemoveAt(i);
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void SnapArenaToBoardClientRpc(int[] pieceIds, int[] files, int[] ranks)
+    {
+        if (arenaSquareMap == null) return;
+
+        for (int i = 0; i < pieceIds.Length; i++)
+        {
+            if (!_arenaById.TryGetValue(pieceIds[i], out var arenaPiece)) continue;
+
+            var sq = arenaSquareMap.GetSquare(files[i], ranks[i]);
+            if (sq == null) continue;
+
+            arenaPiece.currentSquare = sq;
+
+            var netObj = arenaPiece.GetComponent<NetworkObject>();
+            if (netObj == null || !netObj.IsOwner) continue;
+
+            var nt = arenaPiece.GetComponent<ClientNetworkTransform>();
+            Vector3 pos = sq.transform.position + new Vector3(0f, 0.01f, 0f);
+
+            if (nt != null)
+            {
+                nt.Teleport(pos, Quaternion.identity, arenaPiece.transform.localScale);
+            }
+            else
+            {
+                arenaPiece.transform.SetPositionAndRotation(pos, Quaternion.identity);
+            }
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void SetArenaPieceActiveClientRpc(int pieceId, bool active)
+    {
+        if (_arenaById.TryGetValue(pieceId, out var arenaPiece) && arenaPiece != null)
+        {
+            arenaPiece.gameObject.SetActive(active);
         }
     }
 }

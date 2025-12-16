@@ -298,10 +298,7 @@ public class ChessGame : MonoBehaviour
     {
         if (attackerWon)
         {
-            if (defender != null && defender.currentSquare != null)
-            {
-                board[defender.currentSquare.file, defender.currentSquare.rank] = null;
-            }
+            RemovePieceFromBoard(defender);
 
             var fromSquare = attacker.currentSquare;
             if (fromSquare != null)
@@ -314,13 +311,58 @@ public class ChessGame : MonoBehaviour
         }
         else
         {
-            if (attacker != null && attacker.currentSquare != null)
-            {
-                board[attacker.currentSquare.file, attacker.currentSquare.rank] = null;
-            }
+            RemovePieceFromBoard(attacker);
         }
 
         currentTurn = (currentTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
     }
 
+    public void BuildSnapshotByPieceId(out int[] pieceIds, out int[] files, out int[] ranks)
+    {
+        var ids = new List<int>();
+        var fs = new List<int>();
+        var rs = new List<int>();
+
+        for (int f = 0; f < 8; f++)
+        {
+            for (int r = 0; r < 8; r++)
+            {
+                var piece = board[f, r];
+                if (piece == null) continue;
+
+                if (!piece.TryGetComponent<PieceIdentity>(out var ident)) continue;
+
+                ids.Add(ident.pieceId);
+                fs.Add(f);
+                rs.Add(r);
+            }
+        }
+
+        pieceIds = ids.ToArray();
+        files = fs.ToArray();
+        ranks = rs.ToArray();
+    }
+
+    public IEnumerable<ChessPiece> GetAllBoardPieces()
+    {
+        return GetComponentsInChildren<ChessPiece>(true);
+    }
+
+    private void RemovePieceFromBoard(ChessPiece piece)
+    {
+        if (piece == null) return;
+
+        if (piece.currentSquare != null)
+        {
+            int f = piece.currentSquare.file;
+            int r = piece.currentSquare.rank;
+
+            if (board[f,r] == piece)
+            {
+                board[f,r] = null;
+            }
+        }
+
+        piece.currentSquare = null;
+    }
 }

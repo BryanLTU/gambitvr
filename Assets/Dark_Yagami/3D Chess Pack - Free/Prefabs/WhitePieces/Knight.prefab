@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 6741420802840265554}
   - component: {fileID: 789516687258098063}
   - component: {fileID: 1826473422718000482}
+  - component: {fileID: 8648371300744673365}
   m_Layer: 0
   m_Name: Knight
   m_TagString: Untagged
@@ -286,7 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1655930616
+  GlobalObjectIdHash: 1045133100
   InScenePlacedSourceGlobalObjectIdHash: 1775767477
   DeferredDespawnTick: 0
   Ownership: 3
@@ -459,3 +460,16 @@ MonoBehaviour:
   highlightPropertyName: _Highlight
   highlightOnValue: 0.7
   highlightOffValue: 0
+--- !u!114 &8648371300744673365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6188645566315599087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6040e95097c0b1c459ea01b16444761e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PieceIdentity
+  PieceId: 0
