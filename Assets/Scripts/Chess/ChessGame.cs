@@ -298,10 +298,7 @@ public class ChessGame : MonoBehaviour
     {
         if (attackerWon)
         {
-            if (defender != null && defender.currentSquare != null)
-            {
-                board[defender.currentSquare.file, defender.currentSquare.rank] = null;
-            }
+            RemovePieceFromBoard(defender);
 
             var fromSquare = attacker.currentSquare;
             if (fromSquare != null)
@@ -314,10 +311,7 @@ public class ChessGame : MonoBehaviour
         }
         else
         {
-            if (attacker != null && attacker.currentSquare != null)
-            {
-                board[attacker.currentSquare.file, attacker.currentSquare.rank] = null;
-            }
+            RemovePieceFromBoard(attacker);
         }
 
         currentTurn = (currentTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
@@ -352,5 +346,25 @@ public class ChessGame : MonoBehaviour
     public IEnumerable<ChessPiece> GetAllBoardPieces()
     {
         return GetComponentsInChildren<ChessPiece>(true);
+    }
+
+    private void RemovePieceFromBoard(ChessPiece piece)
+    {
+        if (piece == null) return;
+
+        if (piece.currentSquare != null)
+        {
+            int f = piece.currentSquare.file;
+            int r = piece.currentSquare.rank;
+
+            if (board[f,r] == piece)
+            {
+                board[f,r] = null;
+            }
+        }
+
+        piece.gameObject.SetActive(false);
+
+        piece.currentSquare = null;
     }
 }
