@@ -13,6 +13,8 @@ public class ChessPiece : NetworkBehaviour
     [HideInInspector]
     public BoardSquare currentSquare;
 
+    [SerializeField] private bool enableAutoSnap = true;
+
     Rigidbody _rb;
 
     public bool IsGrabbed = false;
@@ -24,7 +26,7 @@ public class ChessPiece : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (!IsSpawned || !IsOwner) return;
+        if (!enableAutoSnap || !IsSpawned || !IsOwner) return;
 
         if (!IsGrabbed && currentSquare != null)
         {
