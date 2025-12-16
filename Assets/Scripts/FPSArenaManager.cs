@@ -381,13 +381,8 @@ public class FPSArenaManager : NetworkBehaviour
         {
             ulong netId = _spawnedWeaponNetIds[i];
 
-            if (spawnManager.SpawnedObjects.TryGetValue(netId, out var netObj))
-            {
-                if (netObj != null && netObj.IsSpawned)
-                {
-                    netObj.Despawn(true);
-                }
-            }
+            HideNetObjectEverywhereClientRpc(netId);
+            DespawnByActualOwner(netId);
 
             _spawnedWeaponNetIds.RemoveAt(i);
         }
@@ -430,6 +425,61 @@ public class FPSArenaManager : NetworkBehaviour
         if (_arenaById.TryGetValue(pieceId, out var arenaPiece) && arenaPiece != null)
         {
             arenaPiece.gameObject.SetActive(active);
+        }
+    }
+
+    private void DespawnByActualOwner(ulong netId)
+    {
+        var sm = NetworkManager.Singleton.SpawnManager;
+
+        if (!sm.SpawnedObjects.TryGetValue(netId, out var netObj) || netObj == null || !netObj.IsSpawned)
+            return;
+
+        ulong owner = netObj.OwnerClientId;
+
+        var target = RpcTarget.Single(owner, RpcTargetUse.Temp);
+        DespawnNetObjectClientRpc(netId, target);
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void DespawnNetObjectClientRpc(ulong netId, RpcParams rpcParams = default)
+    {
+        var sm = NetworkManager.Singleton.SpawnManager;
+
+        if (sm.SpawnedObjects.TryGetValue(netId, out var netObj) && netObj != null && netObj.IsSpawned)
+        {
+            if (!netObj.IsOwner)
+            {
+                Debug.LogWarning($"[FPSArenaManager] DespawnNetObjectClientRpc: not owner. local={NetworkManager.Singleton.LocalClientId} owner={netObj.OwnerClientId} netId={netId}");
+                return;
+            }
+
+            netObj.Despawn(true);
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void HideNetObjectEverywhereClientRpc(ulong netId)
+    {
+        var sm = NetworkManager.Singleton.SpawnManager;
+
+        if (sm.SpawnedObjects.TryGetValue(netId, out var netObj) && netObj != null)
+        {
+            var go = netObj.gameObject;
+
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+                r.enabled = false;
+
+            foreach (var c in go.GetComponentsInChildren<Collider>(true))
+                c.enabled = false;
+
+            if (go.TryGetComponent<Rigidbody>(out var rb))
+            {
+                rb.isKinematic = true;
+                rb.useGravity = false;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
         }
     }
 }
