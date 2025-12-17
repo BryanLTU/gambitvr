@@ -35,4 +35,8 @@ public class WeaponConfig : ScriptableObject
     public float knockbackForce = 0f;
     public bool knockbackPlayers = false;
     public bool knockbackChessPieces = true;
+
+    [Header("Audio")]
+    public AudioClip shotClip;
+    [Range(0f, 1f)] public float shotVolume = 1f;
 }

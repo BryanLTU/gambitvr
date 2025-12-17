@@ -332,6 +332,8 @@ public class FPSArenaManager : NetworkBehaviour
     [Rpc(SendTo.Server, RequireOwnership = false)]
     public void RequestHitscanShotRpc(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId, RpcParams rpcParams = default)
     {
+        ulong shooterId = rpcParams.Receive.SenderClientId;
+
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
         Ray ray = new Ray(origin, direction);
 
@@ -346,22 +348,27 @@ public class FPSArenaManager : NetworkBehaviour
             
             ApplyKnockback(hit, direction, cfg);
 
-            BroadcastHitscanShotRpc(origin, hit.point, weaponId);
+            BroadcastHitscanShotRpc(shooterId, origin, hit.point, weaponId);
         }
         else
         {
             Vector3 endPoint = origin + direction * maxRange;
-            BroadcastHitscanShotRpc(origin, endPoint, weaponId);
+            BroadcastHitscanShotRpc(shooterId, origin, endPoint, weaponId);
         }
     }
 
     [Rpc(SendTo.Everyone)]
-    private void BroadcastHitscanShotRpc(Vector3 origin, Vector3 hitPoint, WeaponId weaponId, RpcParams rpcParams = default)
+    private void BroadcastHitscanShotRpc(ulong shooterClientId, Vector3 origin, Vector3 hitPoint, WeaponId weaponId, RpcParams rpcParams = default)
     {
         WeaponConfig cfg = WeaponDatabase.Instance != null ? WeaponDatabase.Instance.Get(weaponId) : null;
 
         SpawnTracer(origin, hitPoint, cfg);
         SpawnImpact(hitPoint, cfg);
+
+        if (NetworkManager.Singleton.LocalClientId != shooterClientId && cfg != null && cfg.shotClip != null)
+        {
+            AudioSource.PlayClipAtPoint(cfg.shotClip, origin, cfg.shotVolume);
+        }
     }
 
     private void SpawnTracer(Vector3 from, Vector3 to, WeaponConfig weaponConfig)
