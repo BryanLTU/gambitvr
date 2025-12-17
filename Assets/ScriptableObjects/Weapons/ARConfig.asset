@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aa639b2c5a5f0d4781281955b50b502, type: 3}
+  m_Name: ARConfig
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponConfig
+  weaponId: 5
+  weaponPrefab: {fileID: 6502702719606863675, guid: 9f766d63586f6ee4bb8d1e7421e1245c, type: 3}
+  damage: 15
+  fireRate: 1
+  maxRange: 150
+  tracerPrefab: {fileID: 5390777519744527236, guid: e2b4fe4331c61924f90146ff7527ad1d, type: 3}
+  tracerDuration: 0.1
+  impactPrefab: {fileID: 7249649395607456761, guid: 60d72cdf157bcf2468f636b8fd7be60d, type: 3}
+  impactDuration: 1.5
+  knockbackForce: 2
+  knockbackPlayers: 0
+  knockbackChessPieces: 1

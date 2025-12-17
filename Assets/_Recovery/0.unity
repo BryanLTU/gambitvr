@@ -677,6 +677,10 @@ MonoBehaviour:
   weaponConfigs:
   - {fileID: 11400000, guid: ecd756efbef2c274d86e3010ac8f2cbb, type: 2}
   - {fileID: 11400000, guid: 2bad2e0514de5924e97bed7b6379e31d, type: 2}
+  - {fileID: 11400000, guid: c5ccae4cd0367ff40996f3622897ed39, type: 2}
+  - {fileID: 11400000, guid: cdba81388da008440b31dc1577c9ca55, type: 2}
+  - {fileID: 11400000, guid: 3d1786d7051146d419e77ea1acf99795, type: 2}
+  - {fileID: 11400000, guid: a0daeffeef8d362448db7df5dc30c349, type: 2}
 --- !u!4 &631387285
 Transform:
   m_ObjectHideFlags: 0

@@ -4,7 +4,10 @@ public enum WeaponId
 {
     None = 0,
     Rifle = 1,
-    Bow = 2
+    SMG= 2,
+    Sniper = 3,
+    LMG = 4,
+    AR = 5
 }
 
 [CreateAssetMenu(menuName = "FPS/Weapon Config")]
