@@ -11284,10 +11284,6 @@ PrefabInstance:
       propertyPath: pieceId
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5528877466146443966, guid: 8d3405f0568c2ad4aba65f2304305f24, type: 3}
-      propertyPath: highlightOffValue
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6523745958109708191, guid: 8d3405f0568c2ad4aba65f2304305f24, type: 3}
       propertyPath: m_Name
       value: BPawn2

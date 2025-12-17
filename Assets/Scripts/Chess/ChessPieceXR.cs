@@ -24,7 +24,7 @@ public class ChessPieceXR : NetworkBehaviour
         _grabInteractable.selectExited.AddListener(OnRelease);
     }
 
-    void OnDestroy()
+    public override void OnDestroy()
     {
         base.OnDestroy();
         if (_grabInteractable == null) return;
