@@ -10,6 +10,7 @@ public class RifleWeapon : WeaponBase
 {
     [Header("Refs")]
     [SerializeField] private Transform muzzle;
+    [SerializeField] private AudioSource shotSource;
     [SerializeField] XRInputValueReader<float> m_TriggerInput = new("Trigger");
 
     private XRGrabInteractable grab;
@@ -102,6 +103,10 @@ public class RifleWeapon : WeaponBase
 
     protected override void Fire()
     {
+        if (config != null && config.shotClip != null && shotSource != null)
+        {
+            shotSource.PlayOneShot(config.shotClip, config.shotVolume);
+        }
         Vector3 origin = muzzle.position;
         Vector3 dir = muzzle.forward;
 

@@ -24,3 +24,5 @@ MonoBehaviour:
   knockbackForce: 3
   knockbackPlayers: 0
   knockbackChessPieces: 1
+  shotClip: {fileID: 8300000, guid: 64852d90142d7e64297ce3bec08bbb80, type: 3}
+  shotVolume: 1
