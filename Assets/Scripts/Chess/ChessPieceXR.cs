@@ -14,6 +14,7 @@ public class ChessPieceXR : NetworkBehaviour
     private XRGrabInteractable _grabInteractable;
     private List<BoardSquare> _currentLegalMoves;
 
+    BoardSquare _previewSquare;
 
     void Awake()
     {
@@ -115,7 +116,13 @@ public class ChessPieceXR : NetworkBehaviour
 
     void Update()
     {
-        if (!_piece.IsGrabbed || _currentLegalMoves == null) return;
+        if (!_piece.IsGrabbed || _currentLegalMoves == null)
+        {
+            _previewSquare = null;
+            return;
+        }
+
+        _previewSquare = null;
 
         foreach (var sq in _currentLegalMoves)
         {
@@ -127,6 +134,7 @@ public class ChessPieceXR : NetworkBehaviour
                 sq.SetHighlight(true);
                 sq.SetHighlightRecommend(false);
 
+                _previewSquare = sq;
             }
             else
             {
@@ -134,5 +142,15 @@ public class ChessPieceXR : NetworkBehaviour
                 sq.SetHighlightRecommend(true);
             }
         }
+    }
+
+    void LateUpdate()
+    {
+        if (_previewSquare == null) return;
+
+        bool isCapture = ChessGame.Instance.GetPieceAt(_previewSquare.file, _previewSquare.rank) != null;
+        var mat = isCapture ? PreviewMaterialFactory.Capture : PreviewMaterialFactory.Move;
+
+        _previewSquare.DrawPiecePreview(gameObject, mat);
     }
 }
