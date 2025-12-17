@@ -14,6 +14,9 @@ public class BoardSquare : MonoBehaviour
     GameObject _instance;
     GameObject _recommend;
 
+    [SerializeField] private float previewScale = 1f;
+    [SerializeField] private float yOffset = 0.002f;
+
     void Awake()
     {
         if (highlightPrefab && recommendPrefab)
@@ -32,5 +35,29 @@ public class BoardSquare : MonoBehaviour
     public void SetHighlightRecommend(bool enable)
     {
         _recommend?.SetActive(enable);
+    }
+
+    public void DrawPiecePreview(GameObject source, Material previewMaterial)
+    {
+        if (!source || !previewMaterial)
+            return;
+
+        var meshTuples = MeshPreviewCache.Get(source);
+        if (meshTuples == null || meshTuples.Length == 0)
+            return;
+
+        foreach (var (meshFilter, renderer) in meshTuples)
+        {
+            var mesh = meshFilter.sharedMesh;
+            if (!mesh)
+                continue;
+
+            var matrix = Matrix4x4.TRS(transform.position + Vector3.up * yOffset, transform.rotation, meshFilter.transform.lossyScale * previewScale);
+
+            for (int i = 0; i < mesh.subMeshCount; i++)
+            {
+                Graphics.DrawMesh(mesh, matrix, previewMaterial, gameObject.layer, null, i);
+            }
+        }
     }
 }

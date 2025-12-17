@@ -85,6 +85,12 @@ public class ChessGame : MonoBehaviour
         board[square.file, square.rank] = piece;
     }
 
+    public void SetPiece(ChessPiece piece, BoardSquare square)
+    {
+        piece.SetSquare(square);
+        board[square.file, square.rank] = piece;
+    }
+
     public ChessPiece GetPieceAt(int file, int rank)
     {
         return board[file, rank];
@@ -168,7 +174,7 @@ public class ChessGame : MonoBehaviour
         foreach ( int df in diagFiles)
         {
             int rf = forwardRank;
-            if (!InBounds(df, rf)) return;
+            if (!InBounds(df, rf)) continue;
 
             var targetPiece = GetPieceAt(df, rf);
             if (targetPiece != null && targetPiece.pieceColor != piece.pieceColor)
