@@ -201,7 +201,7 @@ public class ChessGameNet : NetworkBehaviour
         _game.BuildSnapshotByPieceId(out var ids, out var files, out var ranks);
         FPSArenaManager.Instance.SnapArenaToBoardClientRpc(ids, files, ranks);
 
-        FPSArenaManager.Instance.StartDuelRpc();
+        FPSArenaManager.Instance.StartDuelRpc(attackerClientId, defenderClientId, attacker.pieceType, defender.pieceType);
     }
 
     public void OnFPSDuelFinished(ulong loserClientId)

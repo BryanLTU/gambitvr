@@ -71,7 +71,12 @@ public class FPSArenaManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone)]
-    public void StartDuelRpc()
+    public void StartDuelRpc(
+        ulong attackerClientId,
+        ulong defenderClientId,
+        PieceType attackerPieceType,
+        PieceType defenderPieceType
+    )
     {
         if (IsSessionOwner)
         {
@@ -81,8 +86,19 @@ public class FPSArenaManager : NetworkBehaviour
             }
         }
 
+        ulong localId = NetworkManager.Singleton.LocalClientId;
+
+        bool iAmAttacker = localId == attackerClientId;
+        bool iAmDefender = localId == defenderClientId;
+
+        if (!iAmAttacker && !iAmDefender)
+        {
+            Debug.LogWarning("Not starting duel due to not matching either attacker or defender id");
+            return;
+        }
+
         bool iAmWhite = IsSessionOwner;
-        ClassType myClass = ClassType.Pawn;
+        ClassType myClass = iAmAttacker ? GetClassTypeForPieceType(attackerPieceType) : GetClassTypeForPieceType(defenderPieceType);
 
         StartCoroutine(DuelTransitionRoutine(iAmWhite, myClass));
     }
@@ -291,6 +307,20 @@ public class FPSArenaManager : NetworkBehaviour
             case ClassType.Bishop: return WeaponId.AR;
             default: return WeaponId.Rifle;
         }
+    }
+
+    private ClassType GetClassTypeForPieceType(PieceType pieceType)
+    {
+        return pieceType switch
+        {
+            PieceType.Pawn => ClassType.Pawn,
+            PieceType.Knight => ClassType.Knight,
+            PieceType.Rook => ClassType.Rook,
+            PieceType.Bishop => ClassType.Bishop,
+            PieceType.Queen => ClassType.Queen,
+            PieceType.King => ClassType.King,
+            _ => ClassType.None,
+        };
     }
 
     public void RequestHitscanShot(Vector3 origin, Vector3 direction, float maxRange, float damage, WeaponId weaponId)
