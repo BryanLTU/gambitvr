@@ -56,6 +56,7 @@ public class PlayerHealth : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)]
     private void SendHealthClientRpc(float newHealth, RpcParams rpcParams = default)
     {
+        _health = maxHealth;
         var ui = FindFirstObjectByType<HandHealthUI>();
         if (ui != null)
             ui.SetHealth01(newHealth);
