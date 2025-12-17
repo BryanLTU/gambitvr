@@ -266,8 +266,10 @@ public class FPSArenaManager : NetworkBehaviour
         switch (classType)
         {
             case ClassType.Pawn: return WeaponId.Rifle;
-            case ClassType.Knight: return WeaponId.Bow;
-            // TODO: Add other classes
+            case ClassType.Knight: return WeaponId.SMG;
+            case ClassType.Rook: return WeaponId.Sniper;
+            case ClassType.Queen: return WeaponId.LMG;
+            case ClassType.Bishop: return WeaponId.AR;
             default: return WeaponId.Rifle;
         }
     }
