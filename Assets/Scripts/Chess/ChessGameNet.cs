@@ -142,7 +142,7 @@ public class ChessGameNet : NetworkBehaviour
         var targetSquare = _game.GetSquare(file, rank);
         if (targetSquare != null)
         {
-            piece.SetSquare(targetSquare);
+            _game.SetPiece(piece, targetSquare);
         }
     }
 

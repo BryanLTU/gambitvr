@@ -85,6 +85,12 @@ public class ChessGame : MonoBehaviour
         board[square.file, square.rank] = piece;
     }
 
+    public void SetPiece(ChessPiece piece, BoardSquare square)
+    {
+        piece.SetSquare(square);
+        board[square.file, square.rank] = piece;
+    }
+
     public ChessPiece GetPieceAt(int file, int rank)
     {
         return board[file, rank];
