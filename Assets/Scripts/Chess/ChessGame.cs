@@ -168,7 +168,7 @@ public class ChessGame : MonoBehaviour
         foreach ( int df in diagFiles)
         {
             int rf = forwardRank;
-            if (!InBounds(df, rf)) return;
+            if (!InBounds(df, rf)) continue;
 
             var targetPiece = GetPieceAt(df, rf);
             if (targetPiece != null && targetPiece.pieceColor != piece.pieceColor)
